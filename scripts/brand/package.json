@@ -1,0 +1,9 @@
+{
+  "name": "urban-duck-brand-tools",
+  "private": true,
+  "type": "module",
+  "description": "One-off scripts that build the production brand SVGs in public/brand/",
+  "devDependencies": {
+    "potrace": "2.1.8"
+  }
+}

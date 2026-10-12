@@ -1,0 +1,728 @@
+<title>Urban Duck Style Tile</title>
+<meta name="description" content="Stage 1 brand and design system for the Urban Duck website, for sign-off.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;1,400&family=Rokkitt:wght@500;700;800&family=Work+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: a printed brand board. Sailcloth paper, lettered review sections A–H, a working header/hero mock up top,
+   and a sign-off sheet at the end. Single light theme on purpose: this IS the site's palette. */
+:root {
+  color-scheme: light;
+  --ud-navy: #0B3354;
+  --ud-night: #0D1B24;
+  --ud-duck: #243447;
+  --ud-sail: #F3EEE4;
+  --ud-canvas: #E6DCCB;
+  --ud-rust: #9B3A2A;
+  --ud-ink: #231F20;
+  --ud-brass: #C9A98A;
+  --ud-olive: #4A4C34;
+  --ud-sand: #CAB29D;
+  --ud-stone: #6B665C;
+  --ud-rule: rgba(13, 27, 36, .15);
+  --ud-rule-dark: rgba(243, 238, 228, .18);
+
+  --font-display: "Rokkitt", Georgia, serif;
+  --font-editorial: "Libre Caslon Text", Georgia, serif;
+  --font-ui: "Work Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --fs-hero: clamp(2.75rem, 1.6rem + 5vw, 5.5rem);
+  --fs-h1: clamp(2.25rem, 1.5rem + 3.2vw, 3.75rem);
+  --fs-h2: clamp(1.625rem, 1.3rem + 1.4vw, 2.25rem);
+  --fs-h3: clamp(1.125rem, 1.08rem + .2vw, 1.25rem);
+  --fs-quote: clamp(1.375rem, 1.1rem + 1.2vw, 2rem);
+  --fs-body: clamp(1rem, .98rem + .1vw, 1.0625rem);
+  --fs-label: clamp(.75rem, .73rem + .1vw, .8125rem);
+  --track-display: .02em;
+  --track-label: .16em;
+
+  --max-w: 1240px;
+  --gutter: clamp(16px, 3vw, 32px);
+  --ease: cubic-bezier(.2, .7, .2, 1);
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .05 0 0 0 0 .1 0 0 0 0 .14 0 0 0 .5 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.16'/%3E%3C/svg%3E");
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--ud-sail) var(--grain);
+  color: var(--ud-night);
+  font: 400 var(--fs-body)/1.6 var(--font-ui);
+  padding-inline: var(--gutter);
+  padding-block: 0 64px;
+}
+img { max-width: 100%; display: block; }
+svg { display: block; }
+.wrap { max-width: var(--max-w); margin-inline: auto; }
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+p { margin: 0; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--ud-rust); outline-offset: 2px; }
+
+.label { font: 500 var(--fs-label)/1.4 var(--font-ui); letter-spacing: var(--track-label); text-transform: uppercase; }
+.display { font-family: var(--font-display); font-weight: 800; text-transform: uppercase; letter-spacing: var(--track-display); line-height: .95; }
+.rule-under::after { content: ""; display: block; width: 48px; height: 3px; background: var(--ud-rust); margin-top: 12px; }
+.icon { width: 24px; height: 24px; flex: none; }
+.muted { color: var(--ud-stone); }
+
+/* ---------- review bar ---------- */
+.review {
+  max-width: var(--max-w); margin: 0 auto; padding-block: 20px;
+  display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: baseline; justify-content: space-between;
+  border-bottom: 1px solid var(--ud-rule);
+}
+.review strong { font-weight: 600; }
+.review p { max-width: 62ch; color: var(--ud-stone); font-size: .9375rem; }
+
+/* ---------- site mock: header + hero ---------- */
+.mock { margin-top: 28px; border: 1px solid var(--ud-rule); background: var(--ud-sail); overflow: hidden; }
+.announce { background: var(--ud-night); color: var(--ud-brass); text-align: center; padding: 9px 16px; }
+.hdr { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 16px; padding: 18px clamp(16px, 3vw, 36px); }
+.hdr nav { display: flex; gap: 26px; }
+.hdr nav a { text-decoration: none; }
+.hdr .lockup { width: clamp(170px, 22vw, 260px); color: var(--ud-navy); }
+.hdr .tools { display: flex; gap: 18px; justify-content: flex-end; align-items: center; color: var(--ud-navy); }
+.bag { position: relative; }
+.bag b { position: absolute; top: -6px; right: -9px; background: var(--ud-rust); color: var(--ud-sail); font: 600 10px/16px var(--font-ui); min-width: 16px; text-align: center; }
+.hdr .menu-btn { display: none; color: var(--ud-navy); }
+@media (max-width: 760px) {
+  .hdr nav { display: none; }
+  .hdr .menu-btn { display: block; }
+  .hdr .search { display: none; }
+}
+
+.hero { position: relative; min-height: clamp(380px, 52vw, 600px); display: flex; align-items: flex-end; color: var(--ud-sail); }
+.hero > img.bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.hero::before { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, rgba(13,27,36,.88) 0%, rgba(13,27,36,.62) 45%, rgba(13,27,36,.08) 80%), linear-gradient(180deg, rgba(13,27,36,0) 50%, rgba(13,27,36,.5) 100%); }
+.hero .copy { position: relative; z-index: 2; padding: clamp(24px, 5vw, 64px); display: grid; gap: 18px; max-width: 760px; }
+.hero h1 { font-size: var(--fs-hero); }
+.hero .sub { font: italic 400 var(--fs-quote)/1.35 var(--font-editorial); color: var(--ud-sail); }
+.hero .eyebrow { color: var(--ud-brass); }
+.hero .stamp { position: absolute; z-index: 2; top: clamp(16px, 3vw, 32px); right: clamp(16px, 3vw, 32px); width: clamp(92px, 12vw, 150px); transform: rotate(-8deg); }
+@media (max-width: 560px) { .hero .stamp { display: none; } .hero .ph-note { top: 12px !important; bottom: auto !important; } }
+.ph-note { position: absolute; z-index: 1; left: 12px; top: 12px; background: rgba(13,27,36,.7); color: var(--ud-sail); padding: 4px 8px; font: 500 11px/1.3 var(--font-ui); letter-spacing: .08em; text-transform: uppercase; }
+
+/* ---------- buttons ---------- */
+.btns { display: flex; flex-wrap: wrap; gap: 12px; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  height: 52px; padding: 0 28px; border: 1px solid var(--ud-navy);
+  font: 500 var(--fs-label)/1 var(--font-ui); letter-spacing: var(--track-label); text-transform: uppercase;
+  background: var(--ud-navy); color: var(--ud-sail); cursor: pointer; text-decoration: none;
+  transition: background-color 150ms var(--ease), color 150ms var(--ease), border-color 150ms var(--ease);
+}
+.btn:hover { background: var(--ud-night); border-color: var(--ud-night); }
+.btn.secondary { background: transparent; color: var(--ud-navy); }
+.btn.secondary:hover { background: var(--ud-navy); color: var(--ud-sail); }
+.btn.light { background: var(--ud-sail); border-color: var(--ud-sail); color: var(--ud-night); }
+.btn.light:hover { background: var(--ud-canvas); }
+.btn.ghost-light { background: transparent; border-color: var(--ud-sail); color: var(--ud-sail); }
+.btn.ghost-light:hover { background: var(--ud-sail); color: var(--ud-night); }
+.btn[disabled] { background: rgba(13,27,36,.06); border-color: var(--ud-rule); color: var(--ud-stone); cursor: not-allowed; }
+.btn.wide { width: 100%; }
+
+/* ---------- sections ---------- */
+section.board { padding-top: clamp(56px, 8vw, 96px); }
+.board-head { display: grid; grid-template-columns: auto 1fr; gap: 6px 18px; align-items: start; margin-bottom: 32px; }
+.letter {
+  grid-row: span 2; width: 52px; height: 52px; display: grid; place-items: center;
+  background: var(--ud-navy); color: var(--ud-sail); font: 800 28px/1 var(--font-display);
+}
+.board-head h2 { font: 800 var(--fs-h2)/1 var(--font-display); text-transform: uppercase; letter-spacing: .03em; color: var(--ud-navy); padding-top: 4px; }
+.board-head p { color: var(--ud-stone); max-width: 70ch; }
+
+.panel { background: var(--ud-canvas); padding: clamp(20px, 3vw, 36px); }
+.panel.dark { background: var(--ud-night); color: var(--ud-sail); }
+.caption { margin-top: 12px; color: var(--ud-stone); font-size: .875rem; }
+.dark .caption { color: var(--ud-brass); }
+
+/* A logos */
+.logos { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 16px; }
+.logos .panel { display: flex; flex-direction: column; justify-content: space-between; min-height: 230px; }
+.logos .art { flex: 1; display: grid; place-items: center; padding: 18px 0; }
+.logos .art > * { width: 100%; }
+.panel .art .lockup-stacked { max-width: 300px; color: var(--ud-navy); }
+.panel.dark .art .lockup-stacked, .panel.dark .art .lockup-horizontal, .panel.dark .art .corp { color: var(--ud-sail); }
+.panel .art .lockup-horizontal { max-width: 340px; color: var(--ud-navy); }
+.panel .art .corp { max-width: 440px; color: var(--ud-ink); }
+.marks-row { display: flex; flex-wrap: wrap; gap: 28px; align-items: center; justify-content: center; }
+.marks-row .duck { width: 64px; color: var(--ud-duck); }
+.marks-row .stamp-sm { width: 120px; transform: rotate(-8deg); }
+.marks-row .fav { display: flex; gap: 12px; align-items: end; }
+.marks-row .fav img { image-rendering: auto; }
+
+/* B header states */
+.states { display: grid; gap: 16px; }
+.state { border: 1px solid var(--ud-rule); }
+.state .tag { padding: 8px 14px; border-bottom: 1px solid var(--ud-rule); color: var(--ud-stone); background: var(--ud-sail); }
+.hdr.scrolled { background: var(--ud-night); color: var(--ud-sail); padding-block: 0; height: 64px; grid-template-columns: auto 1fr auto; }
+.hdr.scrolled .lockup-h { width: clamp(140px, 16vw, 190px); color: var(--ud-sail); }
+.hdr.scrolled nav { justify-content: center; }
+.hdr.scrolled .tools, .hdr.scrolled .menu-btn { color: var(--ud-sail); }
+.phone { max-width: 390px; border: 1px solid var(--ud-rule); }
+.phone .hdr { grid-template-columns: auto 1fr auto; padding: 14px 16px; }
+.phone .hdr nav, .phone .hdr .search { display: none; }
+.phone .hdr .menu-btn { display: block; }
+.phone .hdr .lockup { width: 170px; margin-inline: auto; }
+
+/* C color */
+.swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr)); gap: 16px; }
+.sw { background: var(--ud-sail); border: 1px solid var(--ud-rule); }
+.sw .chip { height: 110px; display: flex; align-items: flex-end; padding: 10px 12px; font: 600 13px/1 var(--font-ui); letter-spacing: .06em; }
+.sw .meta { padding: 12px; display: grid; gap: 4px; }
+.sw .meta b { font-weight: 600; }
+.sw .meta code { font: 500 12.5px/1.2 ui-monospace, "Cascadia Mono", Consolas, monospace; color: var(--ud-stone); }
+.sw .meta span { font-size: .8125rem; color: var(--ud-stone); line-height: 1.4; }
+.support { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+.support div { display: flex; align-items: center; gap: 8px; padding: 6px 12px 6px 6px; background: var(--ud-sail); border: 1px solid var(--ud-rule); font-size: .8125rem; }
+.support i { width: 22px; height: 22px; display: block; }
+.contrast { margin-top: 24px; overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: .875rem; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--ud-rule); }
+th { font: 500 var(--fs-label)/1.3 var(--font-ui); letter-spacing: var(--track-label); text-transform: uppercase; color: var(--ud-stone); }
+td.num { font-variant-numeric: tabular-nums; }
+.pass { color: var(--ud-navy); font-weight: 600; }
+.fail { color: var(--ud-rust); font-weight: 600; }
+.pair { display: inline-block; padding: 3px 10px; font-weight: 600; }
+
+/* D type */
+.type { display: grid; gap: 0; border-top: 1px solid var(--ud-rule); }
+.type-row { display: grid; grid-template-columns: minmax(0, 220px) minmax(0, 1fr); gap: 8px 32px; padding: 26px 0; border-bottom: 1px solid var(--ud-rule); align-items: baseline; }
+.type-row .spec { display: grid; gap: 4px; }
+.type-row .spec b { font-weight: 600; font-size: .9375rem; }
+.type-row .spec span { color: var(--ud-stone); font-size: .8125rem; }
+@media (max-width: 640px) { .type-row { grid-template-columns: minmax(0, 1fr); } }
+.s-hero { font-size: var(--fs-hero); color: var(--ud-navy); }
+.s-h1 { font-size: var(--fs-h1); color: var(--ud-navy); }
+.s-h2 { font: 700 var(--fs-h2)/1.05 var(--font-display); text-transform: uppercase; letter-spacing: .03em; color: var(--ud-navy); }
+.s-h3 { font: 600 var(--fs-h3)/1.3 var(--font-ui); text-transform: uppercase; letter-spacing: .12em; }
+.s-quote { font: italic 400 var(--fs-quote)/1.4 var(--font-editorial); color: var(--ud-navy); }
+.s-body { max-width: 62ch; }
+.s-num { font: 600 14px/1 var(--font-ui); letter-spacing: .08em; color: var(--ud-rust); }
+
+/* E components */
+.comp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr)); gap: 16px; align-items: start; }
+.comp-grid > .panel { display: grid; gap: 18px; align-content: start; }
+.comp-grid .sub { color: var(--ud-stone); }
+.badges { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.badge { font: 600 11px/1 var(--font-ui); letter-spacing: .14em; text-transform: uppercase; padding: 7px 9px; }
+.badge.sold { background: var(--ud-night); color: var(--ud-sail); }
+.badge.low { background: var(--ud-sail); color: var(--ud-rust); }
+.badge.new { border: 1px solid var(--ud-navy); color: var(--ud-navy); }
+.field { display: grid; gap: 8px; }
+.field label, .opt-label { font: 500 var(--fs-label)/1.3 var(--font-ui); letter-spacing: var(--track-label); text-transform: uppercase; }
+.field input, .field textarea, .field select {
+  font: 400 1rem/1.4 var(--font-ui); color: var(--ud-night); background: var(--ud-sail);
+  border: 1px solid var(--ud-rule); border-radius: 2px; padding: 12px 14px; width: 100%;
+}
+.field textarea { min-height: 84px; resize: vertical; }
+.field input:focus, .field textarea:focus { outline: 2px solid var(--ud-rust); outline-offset: 1px; }
+.field .err { color: var(--ud-rust); font-size: .8125rem; }
+
+.pdp { display: grid; gap: 16px; }
+.pdp .line { color: var(--ud-rust); }
+.pdp h3 { font: 800 clamp(1.6rem, 1.3rem + 1.2vw, 2.1rem)/1 var(--font-display); text-transform: uppercase; letter-spacing: .02em; color: var(--ud-navy); }
+.price { font: 500 1.125rem/1 var(--font-ui); font-variant-numeric: tabular-nums; }
+.swatch-row, .size-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.swatch-row button { width: 34px; height: 34px; border: 1px solid var(--ud-rule); padding: 0; cursor: pointer; outline-offset: 3px; }
+.swatch-row button[aria-pressed="true"] { outline: 2px solid var(--ud-navy); }
+.size-row button {
+  min-width: 52px; height: 44px; padding: 0 12px; background: var(--ud-sail); color: var(--ud-night);
+  border: 1px solid var(--ud-rule); font: 500 .875rem/1 var(--font-ui); letter-spacing: .06em; cursor: pointer;
+}
+.size-row button[aria-pressed="true"] { background: var(--ud-navy); color: var(--ud-sail); border-color: var(--ud-navy); }
+.size-row button:disabled { color: var(--ud-stone); text-decoration: line-through; cursor: not-allowed; opacity: .7; }
+.stock-note { color: var(--ud-rust); font-size: .875rem; font-weight: 500; }
+.acc { border-top: 1px solid var(--ud-rule); }
+.acc div { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--ud-rule); }
+
+.bagp { background: var(--ud-sail); border: 1px solid var(--ud-rule); }
+.bagp header { display: flex; justify-content: space-between; align-items: center; padding: 16px 18px; border-bottom: 1px solid var(--ud-rule); }
+.bagp header h4 { margin: 0; font: 800 1.35rem/1 var(--font-display); text-transform: uppercase; color: var(--ud-navy); letter-spacing: .02em; }
+.line-item { display: grid; grid-template-columns: 72px minmax(0, 1fr) auto; gap: 14px; padding: 16px 18px; border-bottom: 1px solid var(--ud-rule); align-items: start; }
+.line-item img { width: 72px; aspect-ratio: 4 / 5; object-fit: cover; background: var(--ud-canvas); }
+.line-item .nm { font-weight: 600; font-size: .9375rem; line-height: 1.3; }
+.line-item .vr { color: var(--ud-stone); font-size: .8125rem; margin-top: 2px; }
+.qty { display: inline-flex; align-items: center; border: 1px solid var(--ud-rule); margin-top: 10px; }
+.qty button { width: 32px; height: 32px; display: grid; place-items: center; background: none; border: 0; color: var(--ud-navy); cursor: pointer; }
+.qty span { min-width: 26px; text-align: center; font-variant-numeric: tabular-nums; font-size: .875rem; }
+.qty .icon { width: 16px; height: 16px; }
+.bagp footer { padding: 18px; display: grid; gap: 12px; }
+.bagp .tot { display: flex; justify-content: space-between; font-weight: 600; }
+
+/* F collection */
+.collection { display: grid; grid-template-columns: minmax(0, 340px) minmax(0, 1fr); border: 1px solid var(--ud-rule); background: var(--ud-sail); }
+@media (max-width: 860px) { .collection { grid-template-columns: minmax(0, 1fr); } }
+.coll-panel { background: var(--ud-night); color: var(--ud-sail); display: grid; grid-template-rows: auto 1fr; }
+.coll-panel .top { padding: 32px 28px 24px; display: grid; gap: 16px; }
+.coll-panel .big { font-size: clamp(4rem, 3rem + 4vw, 6.5rem); color: var(--ud-sail); line-height: .85; }
+.anchor-rule { display: flex; align-items: center; gap: 14px; color: var(--ud-sail); }
+.anchor-rule::before, .anchor-rule::after { content: ""; height: 2px; flex: 1; background: var(--ud-rust); max-width: 80px; }
+.coll-panel .lead { color: var(--ud-sail); font-weight: 500; }
+.coll-panel p.story { color: rgba(243,238,228,.82); font-size: .9375rem; }
+.coll-panel .photo { min-height: 260px; position: relative; }
+.coll-panel .photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.coll-main { padding: clamp(20px, 3vw, 36px); display: grid; gap: 28px; align-content: start; }
+.coll-main .head { display: flex; flex-wrap: wrap; gap: 8px 32px; align-items: end; }
+.coll-main .head h3 { font: 800 var(--fs-h2)/1 var(--font-display); text-transform: uppercase; letter-spacing: .03em; color: var(--ud-navy); }
+.coll-main .head p { color: var(--ud-stone); }
+.cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px 18px; }
+@media (max-width: 1100px) { .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.card { text-decoration: none; display: grid; gap: 12px; color: var(--ud-night); }
+.card .img { position: relative; aspect-ratio: 4 / 5; background: var(--ud-canvas); overflow: hidden; }
+.card .img img { width: 100%; height: 100%; object-fit: cover; transition: transform 600ms var(--ease); }
+.card:hover .img img { transform: scale(1.03); }
+.card .img .badge { position: absolute; top: 10px; left: 10px; }
+.card .meta { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 12px; }
+.card .meta .s-num { padding-top: 3px; }
+.card .meta h4 { margin: 0; font: 600 .9375rem/1.3 var(--font-ui); letter-spacing: .1em; text-transform: uppercase; }
+.card .meta .c { grid-column: 2; color: var(--ud-stone); font: 500 .75rem/1.3 var(--font-ui); letter-spacing: .14em; text-transform: uppercase; }
+.card .meta .price { grid-column: 2; font-size: .9375rem; }
+.card.is-sold .img img { opacity: .55; }
+
+/* G icons + features */
+.icon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 12px; }
+.icon-grid div { display: grid; justify-items: center; gap: 10px; padding: 18px 8px; background: var(--ud-sail); border: 1px solid var(--ud-rule); color: var(--ud-navy); }
+.icon-grid span { font: 500 11px/1.2 var(--font-ui); letter-spacing: .1em; text-transform: uppercase; color: var(--ud-stone); }
+.icon-grid .icon { width: 28px; height: 28px; }
+.features { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; margin-top: 24px; background: var(--ud-rule); border: 1px solid var(--ud-rule); }
+@media (max-width: 860px) { .features { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.features div { padding: 28px 20px; display: grid; justify-items: center; align-content: start; text-align: center; gap: 10px; background: var(--ud-sail); }
+.features .icon { width: 38px; height: 38px; color: var(--ud-navy); }
+.features b { font: 600 var(--fs-label)/1.3 var(--font-ui); letter-spacing: var(--track-label); text-transform: uppercase; }
+.features p { font-size: .8125rem; color: var(--ud-stone); max-width: 22ch; }
+
+/* H imagery + voice */
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: 16px; }
+.list { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+.list li { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 10px; font-size: .9375rem; }
+.list li::before { content: ""; width: 10px; height: 2px; background: var(--ud-rust); margin-top: .75em; }
+.prompt { font: 500 .8125rem/1.6 ui-monospace, "Cascadia Mono", Consolas, monospace; background: var(--ud-sail); border: 1px solid var(--ud-rule); padding: 14px; overflow-wrap: anywhere; }
+.voice { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); border: 1px solid var(--ud-rule); background: var(--ud-sail); }
+.voice > div { padding: 18px 20px; display: grid; gap: 10px; align-content: start; }
+.voice > div + div { border-left: 1px solid var(--ud-rule); }
+.voice .do { color: var(--ud-navy); font-family: var(--font-editorial); font-size: 1.0625rem; }
+.voice .dont { color: var(--ud-stone); text-decoration: line-through; text-decoration-color: var(--ud-rust); }
+.manifesto { margin-top: 24px; text-align: center; padding: 40px 20px; border: 1px solid var(--ud-navy); outline: 1px solid var(--ud-navy); outline-offset: -7px; }
+.manifesto p { font-size: clamp(1.6rem, 1.2rem + 1.8vw, 2.6rem); color: var(--ud-navy); line-height: 1.05; }
+
+/* footer mock */
+.foot { margin-top: clamp(56px, 8vw, 96px); background: var(--ud-night); color: var(--ud-sail); padding: clamp(28px, 5vw, 56px); display: grid; gap: 36px; }
+.foot .top { display: grid; grid-template-columns: minmax(0, 1.3fr) repeat(3, minmax(0, 1fr)); gap: 28px; }
+@media (max-width: 760px) { .foot .top { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .foot .brand { grid-column: 1 / -1; } }
+.foot .corp { width: min(300px, 100%); color: var(--ud-sail); }
+.foot .brand { display: grid; gap: 14px; align-content: start; }
+.foot .brand .tag { color: var(--ud-brass); }
+.foot h5 { margin: 0 0 12px; font: 600 var(--fs-label)/1.3 var(--font-ui); letter-spacing: var(--track-label); text-transform: uppercase; color: var(--ud-brass); }
+.foot ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: .9375rem; }
+.foot .bottom { border-top: 1px solid var(--ud-rule-dark); padding-top: 18px; display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; color: var(--ud-brass); }
+
+/* sign-off */
+.signoff { margin-top: clamp(56px, 8vw, 96px); background: var(--ud-canvas); padding: clamp(20px, 4vw, 44px); display: grid; gap: 28px; }
+.signoff h2 { font: 800 var(--fs-h1)/1 var(--font-display); text-transform: uppercase; color: var(--ud-navy); letter-spacing: .02em; }
+.signoff .intro { max-width: 62ch; }
+.items { display: grid; gap: 0; border-top: 1px solid var(--ud-rule); }
+fieldset.item { margin: 0; border: 0; border-bottom: 1px solid var(--ud-rule); padding: 16px 0; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px 20px; align-items: center; }
+fieldset.item legend { float: left; padding: 0; display: flex; gap: 12px; align-items: baseline; font-weight: 600; }
+fieldset.item legend .l { font: 800 1.25rem/1 var(--font-display); color: var(--ud-rust); min-width: 18px; }
+.choice { display: flex; gap: 8px; }
+.choice input { position: absolute; opacity: 0; pointer-events: none; }
+.choice label {
+  height: 40px; padding: 0 16px; display: inline-flex; align-items: center; cursor: pointer;
+  border: 1px solid var(--ud-navy); color: var(--ud-navy); background: var(--ud-sail);
+  font: 500 12px/1 var(--font-ui); letter-spacing: .14em; text-transform: uppercase;
+}
+.choice input:checked + label.ok { background: var(--ud-navy); color: var(--ud-sail); }
+.choice input:checked + label.chg { background: var(--ud-rust); border-color: var(--ud-rust); color: var(--ud-sail); }
+.choice input:focus-visible + label { outline: 2px solid var(--ud-rust); outline-offset: 2px; }
+fieldset.item .note { grid-column: 1 / -1; }
+fieldset.item .note[hidden] { display: none !important; }
+@media (max-width: 560px) { fieldset.item { grid-template-columns: minmax(0, 1fr); } }
+.qs { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 16px; }
+.send { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+.status { font-weight: 500; color: var(--ud-navy); }
+#fallback { width: 100%; min-height: 220px; font: 400 .875rem/1.5 ui-monospace, Consolas, monospace; padding: 12px; border: 1px solid var(--ud-rule); background: var(--ud-sail); color: var(--ud-night); }
+
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } .card:hover .img img { transform: none; } }
+</style>
+
+{{sprite}}
+
+<div class="review">
+  <span class="label"><strong>Urban Duck website</strong> · Stage 1 · Brand &amp; design system · v1 · Oct 12, 2026</span>
+  <p>Have a look through sections A–H. The sign-off sheet at the bottom lets you approve or ask for changes on each, then copy your answers to send back.</p>
+</div>
+
+<div class="wrap">
+  <!-- Site mock: what a visitor sees first -->
+  <div class="mock" aria-label="Homepage preview">
+    <div class="announce label">Built for the elements · Free shipping details coming soon</div>
+    <header class="hdr">
+      <nav class="label" aria-label="Main"><a href="#f">Shop</a><a href="#h">Lookbook</a><a href="#a">Our Story</a><a href="#e">Wholesale</a></nav>
+      <button class="menu-btn" aria-label="Menu" style="background:none;border:0;padding:0"><svg class="icon"><use href="#i-menu"/></svg></button>
+      <div class="lockup">{{svg:lockup-stacked}}</div>
+      <div class="tools">
+        <svg class="icon search" aria-label="Search"><use href="#i-search"/></svg>
+        <span class="bag" aria-label="Bag, 2 items"><svg class="icon"><use href="#i-bag"/></svg><b>2</b></span>
+      </div>
+    </header>
+    <div class="hero">
+      <img class="bg" src="{{uri:styletile/img/hero-dock.webp}}" alt="Canvas tote, striped towel and navy cap on a weathered dock at a working harbor">
+      <span class="ph-note" style="left:auto;top:auto;right:12px;bottom:12px">Placeholder · catalog comp</span>
+      <img class="stamp" src="{{uri:public/brand/stamp.svg}}" alt="" aria-hidden="true">
+      <div class="copy">
+        <span class="label eyebrow">Marina Goods</span>
+        <h1 class="display">Built for the elements.</h1>
+        <p class="sub">Working class luxury for long days on the water.</p>
+        <div class="btns"><a class="btn light" href="#f">Shop the collection</a><a class="btn ghost-light" href="#h">Our story</a></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- A -->
+  <section class="board" id="a">
+    <div class="board-head"><span class="letter">A</span><h2>Logos &amp; marks</h2>
+      <p>The duck lockup is the face of the site and sits in the header on every page. The corporate logo appears only in a few chosen places. All marks are now clean vector files, so they stay sharp at any size.</p></div>
+    <div class="logos">
+      <div class="panel"><div class="art">{{svg:lockup-stacked:lockup-stacked}}</div><p class="caption">Header lockup, stacked. Used in the main header and on catalog interior pages.</p></div>
+      <div class="panel dark"><div class="art">{{svg:lockup-stacked:lockup-stacked}}</div><p class="caption">Same lockup reversed out on Night Watch.</p></div>
+      <div class="panel"><div class="art">{{svg:lockup-horizontal:lockup-horizontal}}</div><p class="caption">Horizontal lockup, for wide spaces like email headers and the catalog. A compact version without the tagline is used in the slim header once you scroll (section B).</p></div>
+      <div class="panel"><div class="art">{{svg:logo-corporate:corp}}</div><p class="caption">Corporate logo. Used in the footer, Our Story, Wholesale, order confirmation, packing slips, and catalog and lookbook covers. Never in the header.</p></div>
+      <div class="panel"><div class="art marks-row">
+        <div class="duck">{{svg:duck-icon}}</div>
+        <img class="stamp-sm" src="{{uri:public/brand/stamp.svg}}" alt="Built for the Elements stamp">
+        <div class="fav"><img src="{{uri:public/brand/icon-192.png}}" width="64" height="64" alt="App icon"><img src="{{uri:public/brand/favicon-32.png}}" width="32" height="32" alt="Browser tab icon"></div>
+      </div><p class="caption">Duck icon, the "Built for the Elements" stamp (now spelled correctly), and the browser-tab / phone home-screen icons.</p></div>
+    </div>
+  </section>
+
+  <!-- B -->
+  <section class="board" id="b">
+    <div class="board-head"><span class="letter">B</span><h2>Header</h2>
+      <p>At the top of a page the header is light with the full lockup. Once you scroll, it shrinks to a slim dark bar with the horizontal lockup so it stays out of the way. On phones the menu folds into the ☰ button.</p></div>
+    <div class="states">
+      <div class="state"><div class="tag label">Top of page</div>
+        <div class="hdr" style="background:var(--ud-sail)">
+          <nav class="label" aria-label="Main (example)"><a href="#f">Shop</a><a href="#h">Lookbook</a><a href="#a">Our Story</a><a href="#e">Wholesale</a></nav>
+          <span class="menu-btn"><svg class="icon"><use href="#i-menu"/></svg></span>
+          <div class="lockup">{{svg:lockup-stacked}}</div>
+          <div class="tools"><svg class="icon search"><use href="#i-search"/></svg><span class="bag"><svg class="icon"><use href="#i-bag"/></svg><b>2</b></span></div>
+        </div></div>
+      <div class="state"><div class="tag label">After scrolling</div>
+        <div class="hdr scrolled">
+          <div class="lockup-h">{{svg:lockup-compact}}</div>
+          <nav class="label" aria-label="Main (example, scrolled)"><a href="#f">Shop</a><a href="#h">Lookbook</a><a href="#a">Our Story</a><a href="#e">Wholesale</a></nav>
+          <div class="tools"><span class="menu-btn"><svg class="icon"><use href="#i-menu"/></svg></span><svg class="icon search"><use href="#i-search"/></svg><span class="bag"><svg class="icon"><use href="#i-bag"/></svg><b>2</b></span></div>
+        </div></div>
+      <div class="state phone"><div class="tag label">Phone</div>
+        <div class="hdr" style="background:var(--ud-sail)">
+          <span class="menu-btn"><svg class="icon"><use href="#i-menu"/></svg></span>
+          <div class="lockup">{{svg:lockup-stacked}}</div>
+          <div class="tools"><span class="bag"><svg class="icon"><use href="#i-bag"/></svg><b>2</b></span></div>
+        </div></div>
+    </div>
+  </section>
+
+  <!-- C -->
+  <section class="board" id="c">
+    <div class="board-head"><span class="letter">C</span><h2>Color</h2>
+      <p>Sampled straight from the logos and catalog pages, then lightened slightly so they read well on screens. Navy and paper do the work; rust is the accent, used sparingly.</p></div>
+    <div class="swatches">
+      <div class="sw"><div class="chip" style="background:var(--ud-navy);color:var(--ud-sail)">Aa</div><div class="meta"><b>Harbor Navy</b><code>#0B3354</code><span>Main brand color. Buttons, links, headings.</span></div></div>
+      <div class="sw"><div class="chip" style="background:var(--ud-night);color:var(--ud-sail)">Aa</div><div class="meta"><b>Night Watch</b><code>#0D1B24</code><span>Dark sections, scrolled header, footer.</span></div></div>
+      <div class="sw"><div class="chip" style="background:var(--ud-sail);color:var(--ud-night);border-bottom:1px solid var(--ud-rule)">Aa</div><div class="meta"><b>Sailcloth</b><code>#F3EEE4</code><span>Page background.</span></div></div>
+      <div class="sw"><div class="chip" style="background:var(--ud-canvas);color:var(--ud-night)">Aa</div><div class="meta"><b>Canvas</b><code>#E6DCCB</code><span>Product photo backdrops, panels.</span></div></div>
+      <div class="sw"><div class="chip" style="background:var(--ud-rust);color:var(--ud-sail)">Aa</div><div class="meta"><b>Signal Rust</b><code>#9B3A2A</code><span>Accent: underline rules, item numbers, low stock.</span></div></div>
+      <div class="sw"><div class="chip" style="background:var(--ud-brass);color:var(--ud-night)">Aa</div><div class="meta"><b>Brass</b><code>#C9A98A</code><span>Accent on dark backgrounds, where rust is hard to read.</span></div></div>
+    </div>
+    <div class="support">
+      <div><i style="background:var(--ud-duck)"></i>Duck Slate #243447</div>
+      <div><i style="background:var(--ud-ink)"></i>Corporate Ink #231F20</div>
+      <div><i style="background:var(--ud-olive)"></i>Olive #4A4C34</div>
+      <div><i style="background:var(--ud-sand)"></i>Sand #CAB29D</div>
+      <div><i style="background:var(--ud-stone)"></i>Stone #6B665C</div>
+    </div>
+    <div class="contrast">
+      <table>
+        <thead><tr><th>Text on background</th><th>Contrast</th><th>OK for</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pair" style="background:var(--ud-sail);color:var(--ud-navy)">Navy on Sailcloth</span></td><td class="num">11.2 : 1</td><td class="pass">All text</td></tr>
+          <tr><td><span class="pair" style="background:var(--ud-night);color:var(--ud-sail)">Sailcloth on Night Watch</span></td><td class="num">15.1 : 1</td><td class="pass">All text</td></tr>
+          <tr><td><span class="pair" style="background:var(--ud-night);color:var(--ud-brass)">Brass on Night Watch</span></td><td class="num">7.9 : 1</td><td class="pass">All text</td></tr>
+          <tr><td><span class="pair" style="background:var(--ud-sail);color:var(--ud-rust)">Rust on Sailcloth</span></td><td class="num">6.0 : 1</td><td class="pass">Labels, prices, 14px and up</td></tr>
+          <tr><td><span class="pair" style="background:var(--ud-night);color:var(--ud-rust)">Rust on Night Watch</span></td><td class="num">2.5 : 1</td><td class="fail">Never for text</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- D -->
+  <section class="board" id="d">
+    <div class="board-head"><span class="letter">D</span><h2>Typography</h2>
+      <p>Three typefaces, each with one job. A sturdy slab for headlines (closest match to the catalog), a classic serif for the "luxury" moments, and a clean sans for everything you shop with.</p></div>
+    <div class="type">
+      <div class="type-row"><div class="spec"><b>Rokkitt</b><span>Headlines · Extra bold · all caps</span></div><div class="display s-hero">Work. Fish. Repeat.</div></div>
+      <div class="type-row"><div class="spec"><b>Rokkitt</b><span>Page titles</span></div><div class="display s-h1">Classic Tees</div></div>
+      <div class="type-row"><div class="spec"><b>Rokkitt</b><span>Section heads + rust rule</span></div><div class="s-h2 rule-under">Built for the elements.</div></div>
+      <div class="type-row"><div class="spec"><b>Libre Caslon</b><span>Quotes, Our Story, the tagline in long-form</span></div><p class="s-quote">"Long days. Salty souls. Gear that holds up to whatever comes next."</p></div>
+      <div class="type-row"><div class="spec"><b>Work Sans</b><span>Product names</span></div><div class="s-h3">Working Class Yacht Club Tee</div></div>
+      <div class="type-row"><div class="spec"><b>Work Sans</b><span>Body text</span></div><p class="s-body">Our tees are made for long days, salty air, and whatever comes next. Soft, durable, and garment dyed for that broken-in feel from day one.</p></div>
+      <div class="type-row"><div class="spec"><b>Work Sans</b><span>Labels &amp; specs</span></div><div style="display:grid;gap:6px"><span class="s-num">01</span><span class="label">Navy · S · M · L · XL · XXL · 100% cotton</span></div></div>
+    </div>
+  </section>
+
+  <!-- E -->
+  <section class="board" id="e">
+    <div class="board-head"><span class="letter">E</span><h2>Shopping components</h2>
+      <p>Square corners, no drop shadows, generous spacing. These pieces are tappable here, so you can try them. Prices are placeholders until they're set.</p></div>
+    <div class="comp-grid">
+      <div class="panel">
+        <span class="label sub">Buttons</span>
+        <div class="btns"><button class="btn" type="button">Add to Bag</button><button class="btn secondary" type="button">Size Guide</button></div>
+        <div class="btns" style="background:var(--ud-night);padding:14px"><button class="btn light" type="button">Shop the collection</button><button class="btn ghost-light" type="button">Our story</button></div>
+        <div class="btns"><button class="btn" type="button" disabled>Sold Out</button></div>
+        <span class="label sub">Badges</span>
+        <div class="badges"><span class="badge sold">Sold Out</span><span class="badge low">Only 2 left</span><span class="badge new">New</span></div>
+        <span class="label sub">Form field (wholesale &amp; admin)</span>
+        <div class="field"><label for="ex-biz">Business name</label><input id="ex-biz" value="Harbor Provisions Co."></div>
+        <div class="field"><label for="ex-email">Email</label><input id="ex-email" value="orders@harborprovisions" aria-describedby="ex-email-err"><span class="err" id="ex-email-err">Add the full email address, like name@shop.com.</span></div>
+      </div>
+
+      <div class="panel pdp" aria-label="Product page example">
+        <span class="label sub">Product page: choose options</span>
+        <span class="label line">Marina Goods · Classic Tees</span>
+        <h3>Working Class Yacht Club Tee</h3>
+        <span class="price">$— <span class="muted" style="font-size:.8125rem">(price to be set)</span></span>
+        <div><span class="opt-label">Color: <span id="color-name" style="text-transform:none;letter-spacing:0;font-weight:400">Navy</span></span>
+          <div class="swatch-row" style="margin-top:10px">
+            <button type="button" aria-pressed="true" aria-label="Navy" data-name="Navy" style="background:#1E2A3A"></button>
+            <button type="button" aria-pressed="false" aria-label="Ivory" data-name="Ivory" style="background:#D9CBB0"></button>
+            <button type="button" aria-pressed="false" aria-label="Sea Green" data-name="Sea Green" style="background:#545A40"></button>
+          </div></div>
+        <div><span class="opt-label">Size</span>
+          <div class="size-row" style="margin-top:10px">
+            <button type="button" aria-pressed="false">S</button><button type="button" aria-pressed="false">M</button><button type="button" aria-pressed="true">L</button><button type="button" aria-pressed="false">XL</button><button type="button" disabled aria-label="XXL, sold out">XXL</button>
+          </div></div>
+        <p class="stock-note" id="stock-note">Only 2 left in L.</p>
+        <button class="btn wide" type="button">Add to Bag</button>
+        <div class="acc label"><div>Details <svg class="icon"><use href="#i-plus"/></svg></div><div>Fit &amp; size guide <svg class="icon"><use href="#i-plus"/></svg></div><div>Shipping &amp; returns <svg class="icon"><use href="#i-plus"/></svg></div></div>
+      </div>
+
+      <div class="bagp" aria-label="Bag drawer example">
+        <header><h4>Your Bag</h4><svg class="icon" aria-label="Close"><use href="#i-close"/></svg></header>
+        <div class="line-item"><img src="{{uri:styletile/img/tee-wcyc.webp}}" alt=""><div><div class="nm">Working Class Yacht Club Tee</div><div class="vr">Navy / L</div><div class="qty"><button type="button" aria-label="Decrease"><svg class="icon"><use href="#i-minus"/></svg></button><span>1</span><button type="button" aria-label="Increase"><svg class="icon"><use href="#i-plus"/></svg></button></div></div><span class="price">$—</span></div>
+        <div class="line-item"><img src="{{uri:styletile/img/cap-marina.webp}}" alt=""><div><div class="nm">Marina Goods Classic Cap</div><div class="vr">Navy / One size</div><div class="qty"><button type="button" aria-label="Decrease"><svg class="icon"><use href="#i-minus"/></svg></button><span>1</span><button type="button" aria-label="Increase"><svg class="icon"><use href="#i-plus"/></svg></button></div></div><span class="price">$—</span></div>
+        <footer><div class="tot"><span>Subtotal</span><span>$—</span></div><p class="muted" style="font-size:.8125rem">Shipping and tax are calculated at checkout.</p><button class="btn wide" type="button">Checkout</button></footer>
+      </div>
+    </div>
+  </section>
+
+  <!-- F -->
+  <section class="board" id="f">
+    <div class="board-head"><span class="letter">F</span><h2>Collection page</h2>
+      <p>The catalog's navy side panel and cream product page become the layout for each category. Item numbers in rust carry over from the catalog. On phones the navy panel stacks on top.</p></div>
+    <div class="collection">
+      <aside class="coll-panel">
+        <div class="top">
+          <span class="label" style="color:var(--ud-brass)">Urban Duck · Marina Goods</span>
+          <div class="display big">Tees</div>
+          <div class="anchor-rule"><svg class="icon"><use href="#i-anchor"/></svg></div>
+          <p class="label lead">Built for the elements.<br>Made for real life.</p>
+          <p class="story">Made for long days, salty air, and whatever comes next. Garment dyed for that broken-in feel from day one.</p>
+        </div>
+        <div class="photo"><img src="{{uri:styletile/img/panel-boathouse.webp}}" alt="Weathered boathouse with buoys at dusk"><span class="ph-note">Placeholder</span></div>
+      </aside>
+      <div class="coll-main">
+        <div class="head"><h3 class="rule-under">Classic Tees</h3><p class="label">Soft washed. Garment dyed.<br>Made to fade. Made to last.</p></div>
+        <div class="cards">
+          <a class="card" href="#e"><div class="img"><img src="{{uri:styletile/img/tee-wcyc.webp}}" alt="Navy Working Class Yacht Club tee, flat lay"><span class="badge low">Only 2 left</span></div>
+            <div class="meta"><span class="s-num">01</span><h4>Working Class Yacht Club</h4><span class="c">Navy</span><span class="price">$—</span></div></a>
+          <a class="card" href="#e"><div class="img"><img src="{{uri:styletile/img/tee-harbor.webp}}" alt="Ivory Harbor tee, flat lay"><span class="badge new">New</span></div>
+            <div class="meta"><span class="s-num">02</span><h4>Harbor · Work. Fish. Repeat.</h4><span class="c">Ivory</span><span class="price">$—</span></div></a>
+          <a class="card is-sold" href="#e"><div class="img"><img src="{{uri:styletile/img/tee-coldwater.webp}}" alt="Sea green Cold Water Division tee, flat lay"><span class="badge sold">Sold Out</span></div>
+            <div class="meta"><span class="s-num">03</span><h4>Cold Water Division</h4><span class="c">Sea Green</span><span class="price">$—</span></div></a>
+          <a class="card" href="#e"><div class="img"><img src="{{uri:styletile/img/tee-buoy.webp}}" alt="Blue jean Buoy Is Relative tee, flat lay"></div>
+            <div class="meta"><span class="s-num">05</span><h4>Buoy Is Relative</h4><span class="c">Blue Jean</span><span class="price">$—</span></div></a>
+        </div>
+        <p class="muted" style="font-size:.8125rem">Product images are placeholders cut from the catalog comps. Real product photos replace them.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- G -->
+  <section class="board" id="g">
+    <div class="board-head"><span class="letter">G</span><h2>Icons &amp; feature row</h2>
+      <p>Thin line icons drawn to match the catalog's feature rows. The duck is the one solid icon. The feature row sits under product details and on the homepage.</p></div>
+    <div class="icon-grid">
+      <div><svg class="icon"><use href="#i-anchor"/></svg><span>Anchor</span></div>
+      <div><svg class="icon"><use href="#i-waves"/></svg><span>Waves</span></div>
+      <div><svg class="icon"><use href="#i-duck"/></svg><span>Duck</span></div>
+      <div><svg class="icon"><use href="#i-wheel"/></svg><span>Wheel</span></div>
+      <div><svg class="icon"><use href="#i-knot"/></svg><span>Knot</span></div>
+      <div><svg class="icon"><use href="#i-cotton"/></svg><span>Cotton</span></div>
+      <div><svg class="icon"><use href="#i-tee"/></svg><span>Tee</span></div>
+      <div><svg class="icon"><use href="#i-cap"/></svg><span>Cap</span></div>
+      <div><svg class="icon"><use href="#i-tote"/></svg><span>Tote</span></div>
+      <div><svg class="icon"><use href="#i-shield"/></svg><span>Durable</span></div>
+      <div><svg class="icon"><use href="#i-drop"/></svg><span>Quick dry</span></div>
+      <div><svg class="icon"><use href="#i-sun"/></svg><span>Sun</span></div>
+      <div><svg class="icon"><use href="#i-grommet"/></svg><span>Grommet</span></div>
+      <div><svg class="icon"><use href="#i-truck"/></svg><span>Shipping</span></div>
+      <div><svg class="icon"><use href="#i-return"/></svg><span>Returns</span></div>
+      <div><svg class="icon"><use href="#i-ruler"/></svg><span>Size guide</span></div>
+    </div>
+    <div class="features">
+      <div><svg class="icon"><use href="#i-cotton"/></svg><b>Premium fabric</b><p>100% ring spun cotton. Soft, breathable, built to last.</p></div>
+      <div><svg class="icon"><use href="#i-tee"/></svg><b>Relaxed fit</b><p>Classic fit with a broken-in feel from day one.</p></div>
+      <div><svg class="icon"><use href="#i-waves"/></svg><b>Garment dyed</b><p>Each tee is garment dyed for a vintage look and feel.</p></div>
+      <div><svg class="icon"><use href="#i-duck"/></svg><b>Coastal life</b><p>Designed for the dock, the boat, and everywhere between.</p></div>
+    </div>
+  </section>
+
+  <!-- H -->
+  <section class="board" id="h">
+    <div class="board-head"><span class="letter">H</span><h2>Photography &amp; voice</h2>
+      <p>Real photos for every product. Higgsfield only for the harbor scenes around them. The writing stays short and plainspoken.</p></div>
+    <div class="two">
+      <div class="panel" style="display:grid;gap:16px;align-content:start">
+        <span class="label">Product photos (real)</span>
+        <ul class="list">
+          <li>Flat lay or ghost mannequin on a Canvas-colored backdrop, soft daylight.</li>
+          <li>Same 4:5 crop for every product, so the shop grid lines up.</li>
+          <li>One front, one back or on-model, and 1–3 close-ups (tag, stitching, rope handle).</li>
+          <li>A photo for every color of every product.</li>
+        </ul>
+        <span class="label" style="margin-top:8px">Harbor scenes (Higgsfield)</span>
+        <ul class="list">
+          <li>Working New England harbor: cedar shingles, rope-wrapped pilings, buoys, fishing boats.</li>
+          <li>Overcast or golden hour, muted and warm, a little film grain.</li>
+          <li>Never shows Urban Duck products or lettering. AI garbles text, as the catalog comps show.</li>
+        </ul>
+        <div class="prompt">editorial photograph, working New England harbor at overcast morning, [subject], weathered cedar shingles and manila rope, muted navy and warm cream palette, desaturated film grade, subtle grain, 35mm, shallow depth of field, no text, no logos</div>
+      </div>
+      <div style="display:grid;gap:16px;align-content:start">
+        <div class="voice">
+          <div><span class="label" style="color:var(--ud-navy)">We say</span><p class="do">Built for the elements. Made to last.</p><p class="do">Garment dyed for a broken-in feel from day one.</p><p class="do">Only 2 left in L.</p></div>
+          <div><span class="label muted">We don't say</span><p class="dont">Our AMAZING new collection is here!!</p><p class="dont">Ultra-premium luxe fabric experience</p><p class="dont">Hurry! Selling fast!</p></div>
+        </div>
+        <div class="manifesto"><p class="display">Work hard.<br>Live salty.<br>Stay grounded.</p><svg class="icon" style="margin:14px auto 0;color:var(--ud-navy)"><use href="#i-anchor"/></svg></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer mock -->
+  <footer class="foot" aria-label="Footer preview">
+    <div class="top">
+      <div class="brand"><div class="corp">{{svg:logo-corporate}}</div><span class="label tag">Working Class Luxury</span><a class="btn ghost-light" href="#e" style="justify-self:start">Wholesale inquiries</a></div>
+      <div><h5>Shop</h5><ul><li>Tees</li><li>Kids</li><li>Hats</li><li>Totes</li><li>Rope Totes</li><li>Beach Towels</li></ul></div>
+      <div><h5>Help</h5><ul><li>Shipping</li><li>Returns</li><li>Size guide</li><li>Contact</li></ul></div>
+      <div><h5>Company</h5><ul><li>Our Story</li><li>Lookbook</li><li>Wholesale</li><li>Privacy</li></ul></div>
+    </div>
+    <div class="bottom label"><span>© Urban Duck · Est. 2024</span><span>Built for the elements. Inspired by coastal life.</span></div>
+  </footer>
+
+  <!-- Sign-off -->
+  <section class="signoff" id="signoff" aria-labelledby="signoff-title">
+    <h2 id="signoff-title">Sign-off</h2>
+    <p class="intro">Mark each section Approve or Change. If you pick Change, a box opens for a note. Then tap <b>Copy feedback</b> and paste it into a text or email to Leland. Your answers stay on this device until you copy them.</p>
+    <div class="field" style="max-width:360px"><label for="who">Your name</label><input id="who" autocomplete="name"></div>
+    <div class="items" id="items"></div>
+    <div class="qs">
+      <div class="field"><label for="q-est">Is "Est. 2024" the right founding year?</label><input id="q-est" placeholder="Yes, or the right year"></div>
+      <div class="field"><label for="q-other">Anything else?</label><textarea id="q-other" placeholder="Anything that feels off, or that you love"></textarea></div>
+    </div>
+    <div class="send"><button class="btn" type="button" id="copy">Copy feedback</button><span class="status" id="status" role="status"></span></div>
+    <textarea id="fallback" hidden aria-label="Your feedback, ready to copy"></textarea>
+  </section>
+</div>
+
+<script>
+(() => {
+  const sections = [
+    ['A', 'Logos & marks'], ['B', 'Header'], ['C', 'Color'], ['D', 'Typography'],
+    ['E', 'Shopping components'], ['F', 'Collection page'], ['G', 'Icons & feature row'], ['H', 'Photography & voice'],
+  ];
+  const KEY = 'ud-styletile-v1';
+  let saved = {};
+  try { saved = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { saved = {}; }
+  const save = () => {
+    const data = { who: document.getElementById('who').value, est: document.getElementById('q-est').value, other: document.getElementById('q-other').value, s: {} };
+    sections.forEach(([l]) => {
+      const pick = document.querySelector(`input[name="s-${l}"]:checked`);
+      data.s[l] = { pick: pick ? pick.value : '', note: document.getElementById(`n-${l}`).value };
+    });
+    try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (e) { /* storage unavailable: answers still work for this visit */ }
+    return data;
+  };
+
+  const host = document.getElementById('items');
+  sections.forEach(([l, name]) => {
+    const fs = document.createElement('fieldset');
+    fs.className = 'item';
+    fs.innerHTML = `
+      <legend><span class="l">${l}</span><a href="#${l.toLowerCase()}">${name}</a></legend>
+      <div class="choice">
+        <input type="radio" name="s-${l}" id="ok-${l}" value="Approved"><label class="ok" for="ok-${l}">Approve</label>
+        <input type="radio" name="s-${l}" id="chg-${l}" value="Change"><label class="chg" for="chg-${l}">Change</label>
+      </div>
+      <div class="field note" hidden><label for="n-${l}">What should change?</label><textarea id="n-${l}"></textarea></div>`;
+    host.appendChild(fs);
+    const prior = saved.s && saved.s[l];
+    if (prior) {
+      if (prior.pick === 'Approved') fs.querySelector(`#ok-${l}`).checked = true;
+      if (prior.pick === 'Change') fs.querySelector(`#chg-${l}`).checked = true;
+      fs.querySelector(`#n-${l}`).value = prior.note || '';
+    }
+    const note = fs.querySelector('.note');
+    const sync = () => { note.hidden = !fs.querySelector(`#chg-${l}`).checked; };
+    sync();
+    fs.addEventListener('change', () => { sync(); save(); });
+    fs.querySelector('textarea').addEventListener('input', save);
+  });
+  ['who', 'q-est', 'q-other'].forEach((id) => {
+    const el = document.getElementById(id);
+    if (saved[{ who: 'who', 'q-est': 'est', 'q-other': 'other' }[id]]) el.value = saved[{ who: 'who', 'q-est': 'est', 'q-other': 'other' }[id]];
+    el.addEventListener('input', save);
+  });
+
+  const status = document.getElementById('status');
+  const fallback = document.getElementById('fallback');
+  document.getElementById('copy').addEventListener('click', () => {
+    const d = save();
+    const lines = [`Urban Duck style tile, Stage 1 (v1) feedback`, `From: ${d.who || '(no name)'}`, ''];
+    sections.forEach(([l, name]) => {
+      const s = d.s[l];
+      lines.push(`${l}. ${name}: ${s.pick || 'No answer'}${s.pick === 'Change' && s.note ? ` — ${s.note}` : ''}`);
+    });
+    lines.push('', `Est. year: ${d.est || '(no answer)'}`);
+    if (d.other) lines.push(`Other: ${d.other}`);
+    const text = lines.join('\n');
+    const missing = sections.filter(([l]) => !d.s[l].pick).length;
+    // Always show the text, so it can be copied by hand if the clipboard is blocked or never answers.
+    fallback.hidden = false;
+    fallback.value = text;
+    const left = missing ? ` ${missing} section${missing > 1 ? 's' : ''} still unanswered.` : '';
+    const manual = () => { fallback.focus(); fallback.select(); status.textContent = `Select the text below and send it to Leland.${left}`; };
+    status.textContent = `Your feedback is below.${left}`;
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(
+          () => { status.textContent = `Copied. Paste it into a text or email to Leland.${left}`; },
+          manual,
+        );
+      } else manual();
+    } catch (e) { manual(); }
+  });
+
+  // Try-it interactions in the product example
+  document.querySelectorAll('.swatch-row button').forEach((b) => b.addEventListener('click', () => {
+    document.querySelectorAll('.swatch-row button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    document.getElementById('color-name').textContent = b.dataset.name;
+  }));
+  document.querySelectorAll('.size-row button:not(:disabled)').forEach((b) => b.addEventListener('click', () => {
+    document.querySelectorAll('.size-row button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    document.getElementById('stock-note').textContent = b.textContent === 'L' ? 'Only 2 left in L.' : 'In stock.';
+  }));
+})();
+</script>
