@@ -8,14 +8,14 @@ Rebuild of the Urban Duck site, moving off GoDaddy. Design rules live in [DESIGN
 
 | Topic | Decision |
 |---|---|
-| Code & hosting | Code on **GitHub** → auto-deploys to **Cloudflare Pages** (free). Every push gets a preview URL. |
+| Code & hosting | Code on **GitHub** → **GitHub Pages** (free). Domains at **Squarespace** point to it. No Squarespace hosting plan. |
 | Domain | Site domain **urbanduckapparel.com**. Transfer both domains (also trendsetprotraders.com) **GoDaddy → Squarespace Domains**. GoDaddy also hosts **email and a site builder**; see [GoDaddy exit plan](#godaddy-exit-plan). |
 | Business | Company: **Trendsetprotraders** (TSPT). Mostly **wholesale today** (2 accounts); no retail sales yet. Instagram **@urbanduckapparel**. |
 | Contact emails | Customer support **support@urbanduckapparel.com** · wholesale/orders **orders@trendsetprotraders.com** · owner **adoss@trendsetprotraders.com** |
-| Framework | **Astro** (static HTML, near-zero JS) + a tiny vanilla-JS cart. Server bits are **Cloudflare Pages Functions**. |
+| Framework | **Astro** (static HTML, near-zero JS) + a tiny vanilla-JS cart. Server bits are **Supabase Edge Functions**. |
 | Payments | **Stripe Checkout** (hosted page). **No Stripe products to create.** Prices come from our catalog file at checkout time (details below). |
-| Inventory | **Real stock counts** per SKU in **Cloudflare D1** (free SQLite), auto-decremented on paid orders, sold-out / low-stock shown on site. |
-| Stock admin | Password-protected **`/admin`** page on the site, gated by **Cloudflare Access** (emailed one-time code; no passwords for us to store). |
+| Inventory | **Real stock counts** per SKU in **Supabase** (free Postgres, kept awake by a scheduled ping), auto-decremented on paid orders, sold-out / low-stock shown on site. |
+| Stock admin | Password-protected **`/admin`** page on the site, signed in with **Supabase Auth** emailed links, limited to an allow-list of addresses. |
 | Orders & shipping info | Read from the **Stripe dashboard** (name, email, phone, shipping address, items with size/color/SKU). |
 | Product lines | Master brand **Urban Duck**; lines **Marina Goods** (all current products) and **Coastal Outfitter** (later). Site supports multiple lines from day one. |
 | Imagery | **Real product photos** exist. **Higgsfield** is for supporting atmosphere/lifestyle imagery only. |
@@ -44,7 +44,7 @@ Current GoDaddy account (from My Renewals, Oct 12, 2026):
 1. Export anything wanted from the current GoDaddy site (content, product list, any customer/order data).
 2. Set up the new email provider ❓ and move the mailboxes (adoss@, orders@, tspt@, plus new support@urbanduckapparel.com).
 3. Unlock both domains, get auth codes, start transfers to Squarespace. Transfers carry existing DNS only if records are copied first, so **save every DNS record** (especially MX/TXT for email) before starting.
-4. Point DNS: email records → new email provider; website → Cloudflare (Stage 6).
+4. Point DNS: email records → new email provider; website → GitHub Pages (Stage 6).
 5. Cancel GoDaddy items one at a time, only after each replacement is confirmed working.
 
 **Deadline pressure:** Oct 24 is 12 days out. If the email move can't finish by then, renew those two items for the shortest term GoDaddy allows rather than risk losing mail.
@@ -52,34 +52,35 @@ Current GoDaddy account (from My Renewals, Oct 12, 2026):
 ## Architecture
 
 ```
-                         GitHub repo (main branch)
-                                 │  push
-                                 ▼
-┌──────────────────────── Cloudflare Pages ─────────────────────────┐
-│                                                                    │
-│  Static site (Astro build)          Pages Functions (/functions)   │
-│  ─────────────────────────          ─────────────────────────────  │
-│  /                home              POST /api/checkout             │
-│  /shop/[category] collections         → validate cart vs catalog   │
-│  /products/[slug] product pages       → reserve stock in D1        │
-│  /lookbook  /our-story                → create Stripe Checkout     │
-│  /wholesale /policies/*                 Session (inline prices)    │
-│  /order/success                     POST /api/stripe-webhook       │
-│                                       → paid: decrement stock      │
-│  Cart = localStorage + ~5KB JS        → expired: release stock     │
-│  Stock badges fetched from ───────► GET  /api/stock?product=…      │
-│                                     POST /api/wholesale (form)     │
-│  /admin  (Cloudflare Access) ─────► GET/PUT /api/admin/stock       │
-│                                                                    │
-│                       Cloudflare D1 (inventory DB)                 │
+GitHub repo (main) ──push──► GitHub Pages: static Astro site
+                               /, /shop/[category], /products/[slug],
+                               /lookbook, /our-story, /wholesale, /admin,
+                               /order/success, /policies/*
+                               cart = localStorage + ~5KB JS
+                                    │
+              fetch stock / start checkout / admin edits
+                                    ▼
+┌──────────────────────────── Supabase ─────────────────────────────┐
+│ Edge Functions                         Postgres                    │
+│  checkout        validate cart vs      inventory(sku, on_hand,     │
+│                  catalog, reserve        reserved)                 │
+│                  stock, create Stripe  reservations, stripe_events │
+│                  Checkout Session      wholesale_inquiries         │
+│  stripe-webhook  paid → decrement                                  │
+│                  expired → release     Auth: emailed sign-in link  │
+│  wholesale       store inquiry +         for /admin (allow-list)   │
+│                  notify orders@                                    │
+│  Public read: stock levels (row-level security, read-only)         │
 └────────────────────────────────────────────────────────────────────┘
-                 │ Checkout Session            ▲ webhooks
-                 ▼                             │
-            Stripe Checkout (hosted) ──► Stripe dashboard: orders,
-            collects address/phone/card    customers, shipping addresses
+          │ Checkout Session                ▲ webhooks
+          ▼                                 │
+     Stripe Checkout (hosted) ──► Stripe dashboard: orders, customers,
+     collects address/phone/card     shipping addresses
 ```
 
-Domain: `Squarespace Domains (registrar)` → nameservers → `Cloudflare DNS` → Pages custom domain.
+Domain: `urbanduckapparel.com` registered at **Squarespace Domains**; DNS records point to GitHub Pages (same setup as Leland's other sites).
+
+**Keep-awake:** free Supabase projects pause after ~7 days idle. A scheduled GitHub Action pings the database every few days so checkout never goes to sleep.
 
 ### How we avoid creating 200 Stripe products
 
@@ -126,7 +127,7 @@ Stripe Checkout accepts **inline prices** (`line_items[].price_data` with `produ
 ```
 Variants (SKUs) are generated as colors × sizes, so nobody types SKUs by hand.
 
-### Inventory model (D1)
+### Inventory model (Supabase Postgres)
 
 ```sql
 inventory   (sku TEXT PRIMARY KEY, on_hand INT, reserved INT, updated_at TEXT)
@@ -159,7 +160,7 @@ Each stage ends with something your brother can click on and approve. Nothing go
 ### Stage 0 — Foundations & accounts
 **Goal:** every account exists and the slow external steps have started.
 - [ ] Private GitHub repo `urban-duck-website`; this folder becomes it.
-- [ ] Cloudflare account (owned by your brother's business email, with you added as a member).
+- [ ] Supabase organization owned by your brother, with you invited as Administrator. Stripe and Google Workspace the same way: he owns, you're a user. Shared password-manager vault for anything that can't add a second user.
 - [ ] Stripe account in your brother's name/business (bank account, business details). Stays in **test mode** until Stage 6.
 - [ ] **Start the domain transfer now (it takes 5–7 days):** at GoDaddy unlock the domain, turn off any transfer lock, get the auth/EPP code; start the transfer at Squarespace Domains. *(Transfers are blocked for 60 days after a domain is registered or transferred, so check the date.)* Note any existing DNS records first.
 - [ ] **Product truth list:** confirm with your brother which of the 51 catalog items really exist, with exact names, colors, sizes, and materials. The catalog comps are AI-generated and contain errors (see DESIGN.md §13).
@@ -179,12 +180,12 @@ Each stage ends with something your brother can click on and approve. Nothing go
 **Done when:** your brother approves the style tile and a hero image.
 
 ### Stage 2 — Site skeleton & catalog (no commerce yet)
-**Goal:** the whole site clickable on a Cloudflare preview URL, on a phone.
+**Goal:** the whole site clickable on GitHub Pages, on a phone.
 - [ ] Astro project, `tokens.css` from DESIGN.md §12, self-hosted fonts, base layout, header (sticky/shrink), footer, mobile nav.
 - [ ] `catalog.json` for all products in the truth list (placeholder prices allowed), SKU generator, validation script (fails the build on duplicate SKUs, missing images, or bad codes).
 - [ ] Pages: Home · Shop (all) · 6 category collection pages (split-panel hero) · Product page template · Lookbook · Our Story · Wholesale (form posts to a placeholder) · Shipping / Returns / Privacy / Terms (placeholder text) · 404.
 - [ ] Line support: "Marina Goods" label + line filter. Coastal Outfitter is hidden until it has products.
-- [ ] GitHub → Cloudflare Pages connected; every push = preview URL.
+- [ ] GitHub Pages deploy via GitHub Actions on every push to main.
 
 **Done when:** the preview link works end-to-end on mobile and desktop and your brother signs off on page content.
 
@@ -195,7 +196,7 @@ Each stage ends with something your brother can click on and approve. Nothing go
 - [ ] `/order/success` and `/order/cancelled` pages.
 
 **3b. Stripe (test mode)**
-- [ ] Stripe secret key + webhook secret stored as Cloudflare encrypted env vars (never in the repo).
+- [ ] Stripe secret key + webhook secret stored as Supabase Edge Function secrets (never in the repo).
 - [ ] Checkout Session: inline `price_data`, SKU metadata, `shipping_address_collection` (countries ❓), phone collection, placeholder flat shipping rate ❓, automatic receipts, optional promo codes.
 - [ ] `/api/stripe-webhook` with signature verification (logging only at this point; stock comes in Stage 4).
 - [ ] Success page reads the session and shows the order summary.
@@ -205,10 +206,10 @@ Each stage ends with something your brother can click on and approve. Nothing go
 
 ### Stage 4 — Inventory & admin
 **Goal:** the site can't sell what isn't on the shelf.
-- [ ] D1 database + migrations; seed every SKU from the catalog at 0 stock.
+- [ ] Supabase tables + SQL migrations, row-level security; seed every SKU from the catalog at 0 stock; keep-awake GitHub Action.
 - [ ] `/api/stock` (public, cached) → sold-out sizes struck through, "Only N left" at ≤ threshold ❓, "Sold Out" badges on cards.
 - [ ] Reservation on checkout; decrement/release in the webhook; idempotency on Stripe event IDs.
-- [ ] `/admin` behind Cloudflare Access: table of products × sizes, edit on-hand counts, search/filter, "receive stock" (+N) action, CSV export.
+- [ ] `/admin` behind Supabase Auth (allow-listed emails): table of products × sizes, edit on-hand counts, search/filter, "receive stock" (+N) action, CSV export.
 - [ ] Tests: two shoppers racing for the last unit (only one succeeds); an expired session releases stock; a webhook replay doesn't double-decrement.
 
 **Done when:** your brother sets real counts in `/admin` and test orders move them correctly.
@@ -216,9 +217,9 @@ Each stage ends with something your brother can click on and approve. Nothing go
 ### Stage 5 — Polish & pre-launch
 - [ ] Final copy (product descriptions, Our Story, policies), final prices, final shipping rule.
 - [ ] Final photography and Higgsfield imagery placed; lookbook built.
-- [ ] Wholesale form live: Cloudflare Turnstile spam protection + delivery to the business inbox ❓.
+- [ ] Wholesale form live: spam protection (honeypot + Cloudflare Turnstile or hCaptcha) + delivery to the business inbox ❓.
 - [ ] SEO: titles/descriptions, Open Graph images, `Product` JSON-LD (price, availability from stock), sitemap, robots.
-- [ ] Cloudflare Web Analytics (cookieless, so no consent banner needed).
+- [ ] Cookieless analytics (e.g. Cloudflare Web Analytics script or Plausible) ❓.
 - [ ] Accessibility pass + Lighthouse ≥ 95 targets from DESIGN.md §11.
 - [ ] PDF wholesale catalog (fixed typos) available for download on /wholesale.
 
@@ -226,10 +227,10 @@ Each stage ends with something your brother can click on and approve. Nothing go
 
 ### Stage 6 — Launch & cutover
 - [ ] Domain transfer confirmed complete at Squarespace.
-- [ ] Squarespace nameservers → Cloudflare; add the custom domain (apex + `www` redirect) to Pages; HTTPS active.
+- [ ] Squarespace DNS → GitHub Pages (apex A records + `www` CNAME); custom domain set in repo settings; HTTPS enforced.
 - [ ] Stripe: switch to **live** keys, register the live webhook, run one real purchase + refund.
 - [ ] Set real starting inventory in `/admin`.
-- [ ] Optional: Cloudflare Email Routing for `hello@domain` → brother's existing inbox ❓.
+- [ ] Email on Google Workspace (via Squarespace); support@ and orders@ as aliases where possible.
 - [ ] Only after all of the above: cancel remaining GoDaddy services and auto-renew.
 
 **Done when:** the site is live on the real domain and the first real order is fulfilled.
@@ -260,7 +261,7 @@ Each stage ends with something your brother can click on and approve. Nothing go
 | 10 | Low-stock threshold for "Only N left" and whether sold-out items allow pre-orders | Stage 4 |
 | 11 | Returns and exchanges policy | Stage 5 |
 | 12 | Who packs and ships, and how they'll track "shipped" | Stage 6 |
-| 13 | Business email forwarding via Cloudflare Email Routing? | Stage 6 |
+| 13 | Which mailboxes are real users vs. aliases in Google Workspace | Stage 0 |
 
 ---
 
@@ -269,7 +270,9 @@ Each stage ends with something your brother can click on and approve. Nothing go
 | Service | Cost |
 |---|---|
 | GitHub (private repo) | Free |
-| Cloudflare Pages, Functions, D1, Access (≤ 50 users), Web Analytics, Turnstile | Free tier covers this site |
+| GitHub Pages | Free |
+| Supabase (Edge Functions, Postgres, Auth) | Free tier, kept awake by scheduled ping |
+| Google Workspace via Squarespace | Per mailbox, monthly |
 | Squarespace Domains | Annual domain renewal only |
 | Stripe | Per-transaction fees only (no monthly fee); Stripe Tax adds a fee if enabled |
 | Higgsfield | Existing plan |
@@ -291,7 +294,7 @@ Each stage ends with something your brother can click on and approve. Nothing go
 │   ├── layouts/
 │   ├── pages/               ← index, shop/[category], products/[slug], lookbook, …
 │   └── lib/                 ← sku.ts, catalog.ts (shared by pages + functions)
-├── functions/api/           ← checkout.ts, stripe-webhook.ts, stock.ts, wholesale.ts, admin/stock.ts
-├── migrations/              ← D1 SQL
+├── supabase/functions/      ← checkout, stripe-webhook, wholesale
+├── supabase/migrations/     ← SQL schema + row-level security
 └── scripts/validate-catalog.ts
 ```
