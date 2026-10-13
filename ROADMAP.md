@@ -9,7 +9,9 @@ Rebuild of the Urban Duck site, moving off GoDaddy. Design rules live in [DESIGN
 | Topic | Decision |
 |---|---|
 | Code & hosting | Code on **GitHub** → auto-deploys to **Cloudflare Pages** (free). Every push gets a preview URL. |
-| Domain | Transfer **GoDaddy → Squarespace Domains** (registrar only). Nameservers point to Cloudflare. GoDaddy has *only* the domain (no email, no site). |
+| Domain | Site domain **urbanduckapparel.com**. Transfer both domains (also trendsetprotraders.com) **GoDaddy → Squarespace Domains**. GoDaddy also hosts **email and a site builder**; see [GoDaddy exit plan](#godaddy-exit-plan). |
+| Business | Company: **Trendsetprotraders** (TSPT). Mostly **wholesale today** (2 accounts); no retail sales yet. Instagram **@urbanduckapparel**. |
+| Contact emails | Customer support **support@urbanduckapparel.com** · wholesale/orders **orders@trendsetprotraders.com** · owner **adoss@trendsetprotraders.com** |
 | Framework | **Astro** (static HTML, near-zero JS) + a tiny vanilla-JS cart. Server bits are **Cloudflare Pages Functions**. |
 | Payments | **Stripe Checkout** (hosted page). **No Stripe products to create.** Prices come from our catalog file at checkout time (details below). |
 | Inventory | **Real stock counts** per SKU in **Cloudflare D1** (free SQLite), auto-decremented on paid orders, sold-out / low-stock shown on site. |
@@ -21,6 +23,31 @@ Rebuild of the Urban Duck site, moving off GoDaddy. Design rules live in [DESIGN
 | Header mark | **Duck + "URBAN DUCK" + "Working Class Luxury"** lockup. Corporate horizontal logo only in strategic spots (see DESIGN.md §2). |
 
 ---
+
+## GoDaddy exit plan
+
+Current GoDaddy account (from My Renewals, Oct 12, 2026):
+
+| Item | Renews | Plan |
+|---|---|---|
+| trendsetprotraders.com domain (+ Full Domain Protection) | **Oct 24, 2026** | Transfer to Squarespace **before** this date |
+| M365 Email Essentials: adoss@trendsetprotraders.com | **Oct 24, 2026** | Migrate mailbox first, then cancel |
+| M365 Secure Starter: orders@trendsetprotraders.com | **Oct 28, 2026** | Migrate mailbox first, then cancel |
+| Websites + Marketing Commerce (urbanduckapparel.com) | **Oct 28, 2026** | Looks like a duplicate of the one below; confirm which is live, cancel the other |
+| Websites + Marketing Commerce (urbanduckapparel.com) | Sep 28, 2027 | Cancel after new site launches (Stage 6) |
+| M365 Email Essentials: tspt@urbanduckapparel.com | Sep 17, 2027 | Migrate, then cancel |
+| urbanduckapparel.com domain | Sep 18, 2030 | Transfer to Squarespace |
+| M365 Secure Starter "New Account" | Expired Sep 28, 2026 | Unused, let it lapse |
+| Conversations Free | n/a | Let it go |
+
+**Order of operations (email is the risky part; nothing gets cancelled until its replacement works):**
+1. Export anything wanted from the current GoDaddy site (content, product list, any customer/order data).
+2. Set up the new email provider ❓ and move the mailboxes (adoss@, orders@, tspt@, plus new support@urbanduckapparel.com).
+3. Unlock both domains, get auth codes, start transfers to Squarespace. Transfers carry existing DNS only if records are copied first, so **save every DNS record** (especially MX/TXT for email) before starting.
+4. Point DNS: email records → new email provider; website → Cloudflare (Stage 6).
+5. Cancel GoDaddy items one at a time, only after each replacement is confirmed working.
+
+**Deadline pressure:** Oct 24 is 12 days out. If the email move can't finish by then, renew those two items for the shortest term GoDaddy allows rather than risk losing mail.
 
 ## Architecture
 
