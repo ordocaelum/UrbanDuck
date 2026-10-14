@@ -25,3 +25,5 @@ desktop.ini
 
 # generated copy of styletile/index.html for publishing
 styletile/artifact.html
+
+prototype/*.artifact.html
