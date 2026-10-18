@@ -4,21 +4,21 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;1,400&family=Rokkitt:wght@700;800&family=Work+Sans:wght@400;500;600&display=swap">
 <style>
-/* Layout: the real homepage, top to bottom. Single light theme on purpose: it is the brand's paper-and-navy look. */
+/* Layout: one pinned scroll scene (dock zoom -> tagline -> cream panel wipes up with the products),
+   then a quiet typographic category list, wholesale, footer. Single light theme on purpose: brand paper + navy. */
 :root {
   color-scheme: light;
   --ud-navy: #0B3354; --ud-night: #0D1B24; --ud-sail: #F3EEE4; --ud-canvas: #E6DCCB;
-  --ud-rust: #9B3A2A; --ud-brass: #C9A98A; --ud-stone: #6B665C; --ud-ink: #231F20;
-  --ud-rule: rgba(13, 27, 36, .15); --ud-rule-dark: rgba(243, 238, 228, .18);
+  --ud-rust: #9B3A2A; --ud-brass: #C9A98A; --ud-stone: #6B665C;
+  --ud-rule: rgba(13, 27, 36, .14); --ud-rule-dark: rgba(243, 238, 228, .18);
   --font-display: "Rokkitt", Georgia, serif;
   --font-editorial: "Libre Caslon Text", Georgia, serif;
   --font-ui: "Work Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --max-w: 1320px; --gutter: clamp(16px, 3vw, 40px);
+  --max-w: 1320px; --gutter: clamp(16px, 3.5vw, 48px);
   --ease: cubic-bezier(.2, .7, .2, 1);
-  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .05 0 0 0 0 .1 0 0 0 0 .14 0 0 0 .5 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.16'/%3E%3C/svg%3E");
 }
 * { box-sizing: border-box; }
-body { margin: 0; background: var(--ud-sail) var(--grain); color: var(--ud-night); font: 400 1.0625rem/1.6 var(--font-ui); }
+body { margin: 0; background: var(--ud-sail); color: var(--ud-night); font: 400 1.0625rem/1.6 var(--font-ui); }
 img { max-width: 100%; display: block; }
 svg { display: block; }
 a { color: inherit; text-decoration: none; }
@@ -26,262 +26,222 @@ h1, h2, h3, p { margin: 0; }
 h1, h2 { text-wrap: balance; }
 :focus-visible { outline: 2px solid var(--ud-rust); outline-offset: 3px; }
 .wrap { max-width: var(--max-w); margin-inline: auto; padding-inline: var(--gutter); }
-.label { font: 500 .8125rem/1.4 var(--font-ui); letter-spacing: .16em; text-transform: uppercase; }
+.label { font: 500 .75rem/1.4 var(--font-ui); letter-spacing: .2em; text-transform: uppercase; }
 .display { font-family: var(--font-display); font-weight: 800; text-transform: uppercase; letter-spacing: .02em; line-height: .95; }
 .icon { width: 24px; height: 24px; flex: none; }
-.rule::after { content: ""; display: block; width: 48px; height: 3px; background: var(--ud-rust); margin-top: 14px; }
+
+/* ---------- header: transparent over the dark scene, solid paper after ---------- */
+header.site {
+  position: fixed; inset: 0 0 auto; z-index: 20; padding-top: env(safe-area-inset-top, 0px);
+  color: var(--ud-sail); transition: background-color 300ms var(--ease), color 300ms var(--ease), border-color 300ms var(--ease);
+  border-bottom: 1px solid transparent;
+}
+header.site.solid { background: rgba(243, 238, 228, .94); color: var(--ud-navy); border-color: var(--ud-rule); backdrop-filter: blur(8px); }
+.hdr { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 16px; padding-block: 16px; }
+.hdr nav { display: flex; gap: 32px; }
+.hdr nav a { opacity: .85; transition: opacity 150ms var(--ease); }
+.hdr nav a:hover { opacity: 1; }
+.hdr .logo { width: clamp(150px, 15vw, 210px); }
+.tools { display: flex; gap: 22px; justify-content: flex-end; align-items: center; }
+.bag { position: relative; }
+.bag b { position: absolute; top: -6px; right: -9px; background: var(--ud-rust); color: var(--ud-sail); font: 600 10px/16px var(--font-ui); min-width: 16px; text-align: center; }
+.menu-btn { display: none; background: none; border: 0; padding: 0; color: inherit; cursor: pointer; }
+@media (max-width: 860px) { .hdr nav, .tools .search { display: none; } .menu-btn { display: block; } .hdr .logo { width: 132px; } .hdr { padding-block: 10px; } }
+
+/* ---------- the scroll scene ---------- */
+.scene { position: relative; height: 460vh; }
+.stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; background: var(--ud-night); }
+.stage .bg {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  transform: scale(var(--zoom, 1)) translateY(var(--drift, 0%)); transform-origin: 58% 62%;
+  filter: brightness(var(--bright, .56)) saturate(.85); will-change: transform;
+}
+.stage::after { content: ""; position: absolute; inset: 0; background: radial-gradient(120% 90% at 50% 40%, rgba(13,27,36,0) 30%, rgba(13,27,36,.65) 100%); pointer-events: none; }
+.beat { position: absolute; inset: 0; z-index: 2; display: grid; place-items: center; text-align: center; padding: 0 var(--gutter); color: var(--ud-sail); pointer-events: none; }
+.beat > div { display: grid; gap: 22px; justify-items: center; }
+.beat-1 { opacity: var(--t1, 1); transform: translateY(calc((1 - var(--t1, 1)) * -40px)); }
+.beat-1 h1 { font-size: clamp(3.25rem, 1.4rem + 7.5vw, 8rem); }
+.beat-1 .eyebrow { color: var(--ud-brass); }
+.beat-2 { opacity: var(--t2, 0); transform: scale(calc(.96 + var(--t2, 0) * .04)); }
+.beat-2 p { font: italic 400 clamp(2rem, 1.2rem + 4vw, 4.5rem)/1.1 var(--font-editorial); }
+.beat-2 .rule { width: 56px; height: 2px; background: var(--ud-brass); }
+.hint { position: absolute; z-index: 2; left: 50%; bottom: 28px; transform: translateX(-50%); display: grid; justify-items: center; gap: 6px; color: var(--ud-sail); opacity: calc(var(--t1, 1) * .8); }
+.hint .icon { width: 20px; height: 20px; animation: bob 2.2s var(--ease) infinite; }
+@keyframes bob { 50% { transform: translateY(6px); } }
+
+.panel {
+  position: absolute; inset: 0; z-index: 3; background: var(--ud-sail);
+  clip-path: inset(calc(var(--wipe, 1) * 100%) 0 0 0);
+  display: grid; align-content: center; gap: clamp(20px, 4vh, 44px); padding: 96px var(--gutter) 40px;
+}
+.panel .top { display: grid; justify-items: center; gap: 12px; text-align: center; opacity: var(--ph, 0); transform: translateY(calc((1 - var(--ph, 0)) * 24px)); }
+.panel .top .label { color: var(--ud-rust); }
+.panel h2 { font: 800 clamp(2rem, 1.3rem + 3vw, 3.75rem)/1 var(--font-display); text-transform: uppercase; letter-spacing: .02em; color: var(--ud-navy); }
+.row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(12px, 2vw, 28px); max-width: 1180px; width: 100%; margin-inline: auto; }
+@media (max-width: 700px) { .row { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 420px; } }
+.prod { display: grid; gap: 10px; opacity: var(--p, 0); transform: translateY(calc((1 - var(--p, 0)) * 70px)); }
+.prod .img { aspect-ratio: 4 / 5; background: var(--ud-canvas); overflow: hidden; }
+.prod .img img { width: 100%; height: 100%; object-fit: cover; transition: transform 600ms var(--ease); }
+.prod:hover .img img { transform: scale(1.04); }
+.prod span { display: flex; justify-content: space-between; gap: 8px; font: 600 .8125rem/1.3 var(--font-ui); letter-spacing: .12em; text-transform: uppercase; }
+.prod span i { font-style: normal; color: var(--ud-stone); font-weight: 500; }
+@media (max-height: 700px) and (max-width: 700px) { .prod span { display: none; } }
+.panel .cta { justify-self: center; opacity: var(--pc, 0); }
+
 .btn {
-  display: inline-flex; align-items: center; justify-content: center; height: 52px; padding: 0 28px;
-  font: 500 .8125rem/1 var(--font-ui); letter-spacing: .16em; text-transform: uppercase;
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px; height: 52px; padding: 0 30px;
+  font: 500 .8125rem/1 var(--font-ui); letter-spacing: .18em; text-transform: uppercase;
   border: 1px solid var(--ud-navy); background: var(--ud-navy); color: var(--ud-sail);
   transition: background-color 150ms var(--ease), color 150ms var(--ease);
 }
 .btn:hover { background: var(--ud-night); }
-.btn.light { background: var(--ud-sail); border-color: var(--ud-sail); color: var(--ud-night); }
-.btn.light:hover { background: var(--ud-canvas); }
-.btn.ghost { background: transparent; border-color: var(--ud-sail); color: var(--ud-sail); }
-.btn.ghost:hover { background: var(--ud-sail); color: var(--ud-night); }
 .btn.outline { background: transparent; color: var(--ud-navy); }
 .btn.outline:hover { background: var(--ud-navy); color: var(--ud-sail); }
+.btn .icon { width: 18px; height: 18px; }
 
-/* preview ribbon */
-.preview { background: var(--ud-rust); color: var(--ud-sail); text-align: center; padding: 8px 16px; font: 500 .75rem/1.4 var(--font-ui); letter-spacing: .12em; text-transform: uppercase; }
+/* static fallback for reduced motion */
+.static .scene { height: auto; }
+.static .stage { position: relative; height: 92vh; }
+.static .stage .bg { transform: none; }
+.static .beat-2, .static .hint { display: none; }
+.static .panel { position: relative; clip-path: none; min-height: auto; padding-block: 96px; }
+.static .panel .top, .static .prod, .static .panel .cta { opacity: 1; transform: none; }
 
-/* header */
-.announce { background: var(--ud-night); color: var(--ud-brass); text-align: center; padding: 9px 16px; }
-.announce a { border-bottom: 1px solid currentColor; }
-header.site { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10; background: var(--ud-sail); border-bottom: 1px solid var(--ud-rule); }
-.hdr { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 16px; padding-block: 16px; }
-.hdr nav { display: flex; gap: 28px; }
-.hdr nav a:hover { color: var(--ud-rust); }
-.hdr .logo { width: clamp(170px, 18vw, 240px); color: var(--ud-navy); }
-.tools { display: flex; gap: 20px; justify-content: flex-end; align-items: center; color: var(--ud-navy); }
-.bag { position: relative; }
-.bag b { position: absolute; top: -6px; right: -9px; background: var(--ud-rust); color: var(--ud-sail); font: 600 10px/16px var(--font-ui); min-width: 16px; text-align: center; }
-.menu-btn { display: none; background: none; border: 0; padding: 0; color: var(--ud-navy); cursor: pointer; }
-@media (max-width: 860px) {
-  .hdr nav, .tools .search { display: none; }
-  .menu-btn { display: block; }
+/* ---------- categories: a quiet typographic index ---------- */
+section.band { padding-block: clamp(80px, 12vw, 160px); }
+.index-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 12px 40px; margin-bottom: 28px; }
+.index-head .label { color: var(--ud-rust); }
+.index-head p { color: var(--ud-stone); max-width: 40ch; }
+.cats { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--ud-rule); }
+.cats a {
+  display: grid; grid-template-columns: 56px minmax(0, 1fr) auto auto; align-items: center; gap: 16px 24px;
+  padding-block: clamp(14px, 2.2vw, 26px); border-bottom: 1px solid var(--ud-rule); color: var(--ud-navy);
 }
+.cats .n { font: 600 .875rem/1 var(--font-ui); letter-spacing: .08em; color: var(--ud-rust); }
+.cats .name { font: 800 clamp(2rem, 1.2rem + 3.6vw, 4.5rem)/1 var(--font-display); text-transform: uppercase; letter-spacing: .02em; transition: transform 300ms var(--ease); }
+.cats .thumb { width: clamp(56px, 7vw, 92px); aspect-ratio: 4 / 5; overflow: hidden; background: var(--ud-canvas); opacity: 0; transform: translateX(-12px); transition: opacity 300ms var(--ease), transform 300ms var(--ease); }
+.cats .thumb img { width: 100%; height: 100%; object-fit: cover; }
+.cats .icon { color: var(--ud-navy); transition: transform 300ms var(--ease); }
+.cats a:hover .name, .cats a:focus-visible .name { transform: translateX(10px); }
+.cats a:hover .thumb, .cats a:focus-visible .thumb { opacity: 1; transform: none; }
+.cats a:hover .icon { transform: translateX(6px); }
+@media (hover: none) { .cats .thumb { opacity: 1; transform: none; } }
+@media (max-width: 560px) { .cats a { grid-template-columns: 32px minmax(0, 1fr) auto; } .cats .icon { display: none; } }
 
-@media (max-width: 560px) { .hdr { padding-block: 10px; } .hdr .logo { width: 140px; } }
+/* ---------- reveal on scroll (content is visible by default; JS only adds the motion) ---------- */
+.js .reveal { opacity: 0; transform: translateY(28px); transition: opacity 900ms var(--ease), transform 900ms var(--ease); }
+.js .reveal.in { opacity: 1; transform: none; }
 
-/* hero */
-.hero { position: relative; min-height: clamp(460px, 62vw, 720px); display: flex; align-items: center; color: var(--ud-sail); overflow: hidden; }
-.hero img.bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
-.hero::before { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, rgba(13,27,36,.9) 0%, rgba(13,27,36,.6) 45%, rgba(13,27,36,.05) 85%); }
-.hero .copy { position: relative; z-index: 2; display: grid; gap: 20px; max-width: 680px; padding-block: 64px; }
-.hero .eyebrow { color: var(--ud-brass); }
-.hero h1 { font-size: clamp(3rem, 1.6rem + 5.5vw, 6rem); }
-.hero .sub { font: italic 400 clamp(1.25rem, 1rem + 1vw, 1.875rem)/1.35 var(--font-editorial); }
-.hero .btns { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
-.hero .stamp { position: absolute; z-index: 2; right: var(--gutter); bottom: 36px; width: clamp(110px, 12vw, 160px); transform: rotate(-8deg); }
-.ph { position: absolute; z-index: 2; left: 12px; bottom: 12px; background: rgba(13,27,36,.7); color: var(--ud-sail); padding: 4px 8px; font: 500 10.5px/1.3 var(--font-ui); letter-spacing: .08em; text-transform: uppercase; }
-@media (max-width: 640px) { .hero .stamp { display: none; } .hero::before { background: linear-gradient(180deg, rgba(13,27,36,.55) 0%, rgba(13,27,36,.88) 100%); } }
+/* ---------- manifesto ---------- */
+.manifesto { text-align: center; display: grid; gap: 26px; justify-items: center; }
+.manifesto .duck { width: 54px; color: var(--ud-navy); }
+.manifesto p { font: italic 400 clamp(1.5rem, 1.1rem + 2vw, 2.75rem)/1.3 var(--font-editorial); color: var(--ud-navy); max-width: 26ch; }
 
-section.band { padding-block: clamp(64px, 9vw, 112px); }
-.head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 16px 40px; margin-bottom: 36px; }
-.head h2 { font: 800 clamp(1.75rem, 1.3rem + 1.6vw, 2.5rem)/1 var(--font-display); text-transform: uppercase; letter-spacing: .03em; color: var(--ud-navy); }
-.head p { color: var(--ud-stone); max-width: 46ch; }
-.head .more { color: var(--ud-navy); display: inline-flex; align-items: center; gap: 6px; }
-.head .more .icon { width: 18px; height: 18px; }
+/* ---------- wholesale ---------- */
+.wholesale { background: var(--ud-night); color: var(--ud-sail); }
+.ws { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 32px 64px; align-items: end; }
+@media (max-width: 860px) { .ws { grid-template-columns: minmax(0, 1fr); align-items: start; } }
+.ws .label { color: var(--ud-brass); }
+.ws h2 { font: 800 clamp(2.25rem, 1.4rem + 3.6vw, 4.5rem)/1 var(--font-display); text-transform: uppercase; letter-spacing: .02em; margin-top: 14px; }
+.ws p { color: rgba(243,238,228,.78); max-width: 52ch; margin-top: 18px; }
+.ws .actions { display: grid; gap: 14px; justify-items: start; }
+.ws .btn { background: var(--ud-sail); border-color: var(--ud-sail); color: var(--ud-night); }
+.ws .btn:hover { background: var(--ud-canvas); }
+.ws .mail { color: var(--ud-brass); font-size: .9375rem; user-select: all; }
 
-/* categories */
-.cats { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 16px; }
-@media (max-width: 1100px) { .cats { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-@media (max-width: 560px) { .cats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-.cat { display: grid; gap: 12px; }
-.cat .img { aspect-ratio: 4 / 5; background: var(--ud-canvas); overflow: hidden; }
-.cat .img img { width: 100%; height: 100%; object-fit: cover; transition: transform 600ms var(--ease); }
-.cat:hover .img img { transform: scale(1.04); }
-.cat span { display: flex; justify-content: space-between; align-items: center; font: 600 .875rem/1.2 var(--font-ui); letter-spacing: .12em; text-transform: uppercase; color: var(--ud-navy); }
-.cat span .icon { width: 18px; height: 18px; transition: transform 150ms var(--ease); }
-.cat:hover span .icon { transform: translateX(4px); }
-
-/* products */
-.cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px 20px; }
-@media (max-width: 960px) { .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-.card { display: grid; gap: 12px; }
-.card .img { position: relative; aspect-ratio: 4 / 5; background: var(--ud-canvas); overflow: hidden; }
-.card .img img { width: 100%; height: 100%; object-fit: cover; transition: transform 600ms var(--ease); }
-.card:hover .img img { transform: scale(1.03); }
-.badge { position: absolute; top: 10px; left: 10px; font: 600 11px/1 var(--font-ui); letter-spacing: .14em; text-transform: uppercase; padding: 7px 9px; }
-.badge.new { border: 1px solid var(--ud-navy); color: var(--ud-navy); background: var(--ud-sail); }
-.meta { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 12px; }
-.num { font: 600 .875rem/1 var(--font-ui); letter-spacing: .08em; color: var(--ud-rust); padding-top: 3px; }
-.meta h3 { font: 600 .9375rem/1.3 var(--font-ui); letter-spacing: .1em; text-transform: uppercase; }
-.meta .c { grid-column: 2; color: var(--ud-stone); font: 500 .75rem/1.3 var(--font-ui); letter-spacing: .14em; text-transform: uppercase; }
-.meta .price { grid-column: 2; font-variant-numeric: tabular-nums; font-size: .9375rem; }
-
-/* story */
-.story { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); background: var(--ud-night); color: var(--ud-sail); }
-@media (max-width: 860px) { .story { grid-template-columns: minmax(0, 1fr); } }
-.story .photo { position: relative; min-height: 420px; }
-.story .photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.story .text { padding: clamp(40px, 7vw, 96px) clamp(24px, 6vw, 88px); display: grid; gap: 22px; align-content: center; }
-.story .eyebrow { color: var(--ud-brass); }
-.story h2 { font-size: clamp(2.25rem, 1.5rem + 3vw, 3.75rem); color: var(--ud-sail); }
-.story p.lede { font: italic 400 clamp(1.125rem, 1rem + .6vw, 1.5rem)/1.45 var(--font-editorial); color: var(--ud-sail); }
-.story p.body { color: rgba(243,238,228,.8); max-width: 52ch; }
-.anchor-rule { display: flex; align-items: center; gap: 14px; color: var(--ud-brass); }
-.anchor-rule::before, .anchor-rule::after { content: ""; height: 2px; width: 56px; background: var(--ud-brass); opacity: .7; }
-
-/* features */
-.features { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--ud-rule); border: 1px solid var(--ud-rule); }
-@media (max-width: 860px) { .features { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-.features div { background: var(--ud-sail); padding: 32px 20px; display: grid; justify-items: center; align-content: start; text-align: center; gap: 10px; }
-.features .icon { width: 40px; height: 40px; color: var(--ud-navy); }
-.features b { font: 600 .8125rem/1.3 var(--font-ui); letter-spacing: .16em; text-transform: uppercase; }
-.features p { font-size: .875rem; color: var(--ud-stone); max-width: 24ch; }
-
-/* wholesale */
-.wholesale { background: var(--ud-canvas); }
-.ws { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: clamp(32px, 6vw, 80px); align-items: center; }
-@media (max-width: 860px) { .ws { grid-template-columns: minmax(0, 1fr); } }
-.ws h2 { font: 800 clamp(2rem, 1.4rem + 2.6vw, 3.25rem)/1 var(--font-display); text-transform: uppercase; color: var(--ud-navy); letter-spacing: .02em; }
-.ws .copy { display: grid; gap: 20px; }
-.ws ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
-.ws li { display: grid; grid-template-columns: 24px minmax(0, 1fr); gap: 12px; align-items: start; }
-.ws li .icon { color: var(--ud-rust); width: 22px; height: 22px; margin-top: 2px; }
-.ws .contact { color: var(--ud-stone); font-size: .9375rem; }
-.ws .contact b { color: var(--ud-navy); font-weight: 600; user-select: all; }
-.ticket { border: 1px solid var(--ud-navy); outline: 1px solid var(--ud-navy); outline-offset: -8px; padding: clamp(28px, 4vw, 48px); text-align: center; display: grid; gap: 16px; justify-items: center; background: var(--ud-sail); }
-.ticket .duck { width: 72px; color: var(--ud-navy); }
-.ticket p.big { font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.5rem); color: var(--ud-navy); }
-
-/* instagram */
-.ig { text-align: center; display: grid; gap: 14px; justify-items: center; }
-.ig .handle { font: 800 clamp(1.5rem, 1.2rem + 1.2vw, 2.25rem)/1 var(--font-display); text-transform: uppercase; color: var(--ud-navy); letter-spacing: .03em; }
-.ig p { color: var(--ud-stone); }
-
-/* footer */
-footer.site { background: var(--ud-night); color: var(--ud-sail); padding-block: clamp(48px, 7vw, 80px) 28px; }
+/* ---------- footer ---------- */
+footer.site { background: var(--ud-night); color: var(--ud-sail); border-top: 1px solid var(--ud-rule-dark); padding-block: 56px 28px; }
 .ft { display: grid; grid-template-columns: minmax(0, 1.4fr) repeat(3, minmax(0, 1fr)); gap: 32px; }
 @media (max-width: 860px) { .ft { grid-template-columns: repeat(2, minmax(0, 1fr)); } .ft .brand { grid-column: 1 / -1; } }
-.ft .brand { display: grid; gap: 16px; align-content: start; }
-.ft .corp { width: min(300px, 100%); color: var(--ud-sail); }
+.ft .brand { display: grid; gap: 14px; align-content: start; }
+.ft .corp { width: min(260px, 100%); color: var(--ud-sail); }
 .ft .tag { color: var(--ud-brass); }
-.ft h4 { margin: 0 0 14px; font: 600 .8125rem/1.3 var(--font-ui); letter-spacing: .16em; text-transform: uppercase; color: var(--ud-brass); }
+.ft h4 { margin: 0 0 14px; font: 600 .75rem/1.3 var(--font-ui); letter-spacing: .2em; text-transform: uppercase; color: var(--ud-brass); }
 .ft ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; font-size: .9375rem; }
-.ft ul a:hover { color: var(--ud-brass); }
-.ft .email { font-size: .875rem; overflow-wrap: anywhere; }
+.ft ul a { opacity: .85; } .ft ul a:hover { opacity: 1; }
+.ft .email { font-size: .875rem; overflow-wrap: anywhere; color: rgba(243,238,228,.8); }
 .legal { margin-top: 44px; padding-top: 20px; border-top: 1px solid var(--ud-rule-dark); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; color: var(--ud-brass); }
 
-@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } .cat:hover .img img, .card:hover .img img { transform: none; } }
+.preview-tag { position: fixed; z-index: 30; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); background: var(--ud-rust); color: var(--ud-sail); padding: 6px 10px; font: 500 10.5px/1.3 var(--font-ui); letter-spacing: .1em; text-transform: uppercase; }
+
+@media (prefers-reduced-motion: reduce) { .hint .icon { animation: none; } .js .reveal { opacity: 1; transform: none; transition: none; } }
 </style>
 
 {{sprite}}
 
-<div class="preview">Preview · placeholder photos from the catalog · prices to be set</div>
-<div class="announce label">Wholesale accounts welcome · <a href="#wholesale">Become a stockist</a></div>
-
-<header class="site">
+<header class="site" id="hdr">
   <div class="wrap hdr">
-    <nav class="label" aria-label="Main"><a href="#shop">Shop</a><a href="#wholesale">Wholesale</a><a href="#story">Our Story</a></nav>
+    <nav class="label" aria-label="Main"><a href="#collection">Shop</a><a href="#wholesale">Wholesale</a><a href="#story">Our Story</a></nav>
     <button class="menu-btn" type="button" aria-label="Open menu"><svg class="icon"><use href="#i-menu"/></svg></button>
     <a class="logo" href="#top" aria-label="Urban Duck home">{{svg:lockup-stacked}}</a>
     <div class="tools">
-      <a class="search" href="#shop" aria-label="Search"><svg class="icon"><use href="#i-search"/></svg></a>
-      <a class="bag" href="#shop" aria-label="Bag, 0 items"><svg class="icon"><use href="#i-bag"/></svg><b>0</b></a>
+      <a class="search" href="#collection" aria-label="Search"><svg class="icon"><use href="#i-search"/></svg></a>
+      <a class="bag" href="#collection" aria-label="Bag, 0 items"><svg class="icon"><use href="#i-bag"/></svg><b>0</b></a>
     </div>
   </div>
 </header>
 
 <main id="top">
-  <section class="hero" aria-label="Built for the elements">
-    <img class="bg" src="{{uri:styletile/img/hero-dock.webp}}" alt="Canvas tote, striped towel and navy cap on a weathered dock at a working harbor">
-    <span class="ph">Placeholder image</span>
-    <div class="wrap" style="width:100%">
-      <div class="copy">
+  <section class="scene" id="scene" aria-label="Built for the elements">
+    <div class="stage" id="stage">
+      <img class="bg" src="{{uri:styletile/img/hero-dock.webp}}" alt="Working harbor dock with a canvas tote, striped towel and navy cap">
+      <div class="beat beat-1"><div>
         <span class="label eyebrow">Urban Duck · Marina Goods</span>
-        <h1 class="display">Built for the elements.</h1>
-        <p class="sub">Working class luxury. Tees, hats, totes and towels for long days on the water.</p>
-        <div class="btns"><a class="btn light" href="#shop">Shop the collection</a><a class="btn ghost" href="#wholesale">Wholesale</a></div>
+        <h1 class="display">Built for<br>the elements.</h1>
+      </div></div>
+      <div class="beat beat-2" aria-hidden="true"><div>
+        <span class="rule"></span>
+        <p>Working class luxury.</p>
+        <span class="label" style="color:var(--ud-brass)">Long days · Salty souls</span>
+      </div></div>
+      <div class="hint" aria-hidden="true"><span class="label">Scroll</span><svg class="icon"><use href="#i-chevron-down"/></svg></div>
+
+      <div class="panel" id="collection">
+        <div class="top"><span class="label">The collection</span><h2>Made to last.</h2></div>
+        <div class="row">
+          <a class="prod" href="#index"><div class="img"><img src="{{uri:styletile/img/tee-wcyc.webp}}" alt="Navy Working Class Yacht Club tee"></div><span>Yacht Club Tee <i>$—</i></span></a>
+          <a class="prod" href="#index"><div class="img"><img src="{{uri:prototype/img/cat-hats.webp}}" alt="Navy Marina Goods classic cap"></div><span>Marina Cap <i>$—</i></span></a>
+          <a class="prod" href="#index"><div class="img"><img src="{{uri:prototype/img/cat-rope.webp}}" alt="Yacht Club rope tote"></div><span>Rope Tote <i>$—</i></span></a>
+          <a class="prod" href="#index"><div class="img"><img src="{{uri:prototype/img/cat-towels.webp}}" alt="Navy Yacht Club beach towel"></div><span>Beach Towel <i>$—</i></span></a>
+        </div>
+        <a class="btn cta" href="#index">Shop all <svg class="icon"><use href="#i-chevron-right"/></svg></a>
       </div>
     </div>
-    <img class="stamp" src="{{uri:public/brand/stamp.svg}}" alt="" aria-hidden="true">
   </section>
 
-  <section class="band" id="shop">
+  <section class="band" id="index">
     <div class="wrap">
-      <div class="head"><h2 class="rule">Shop the dock</h2><p>Six categories, one standard: built for the elements, made to last.</p></div>
-      <div class="cats">
-        <a class="cat" href="#featured"><div class="img"><img src="{{uri:styletile/img/tee-harbor.webp}}" alt="Ivory Harbor tee"></div><span>Tees <svg class="icon"><use href="#i-chevron-right"/></svg></span></a>
-        <a class="cat" href="#featured"><div class="img"><img src="{{uri:prototype/img/cat-kids.webp}}" alt="Navy Little Crew Yacht Club kids tee"></div><span>Kids <svg class="icon"><use href="#i-chevron-right"/></svg></span></a>
-        <a class="cat" href="#featured"><div class="img"><img src="{{uri:prototype/img/cat-hats.webp}}" alt="Navy Marina Goods classic cap"></div><span>Hats <svg class="icon"><use href="#i-chevron-right"/></svg></span></a>
-        <a class="cat" href="#featured"><div class="img"><img src="{{uri:prototype/img/cat-totes.webp}}" alt="Natural and navy Marina tote"></div><span>Totes <svg class="icon"><use href="#i-chevron-right"/></svg></span></a>
-        <a class="cat" href="#featured"><div class="img"><img src="{{uri:prototype/img/cat-rope.webp}}" alt="Yacht Club rope tote with rope handles"></div><span>Rope Totes <svg class="icon"><use href="#i-chevron-right"/></svg></span></a>
-        <a class="cat" href="#featured"><div class="img"><img src="{{uri:prototype/img/cat-towels.webp}}" alt="Navy Yacht Club beach towel"></div><span>Towels <svg class="icon"><use href="#i-chevron-right"/></svg></span></a>
-      </div>
+      <div class="index-head reveal"><span class="label">Shop by category</span><p>Six categories. One standard.</p></div>
+      <ul class="cats">
+        <li class="reveal"><a href="#index"><span class="n">01</span><span class="name">Tees</span><span class="thumb"><img src="{{uri:styletile/img/tee-harbor.webp}}" alt=""></span><svg class="icon"><use href="#i-chevron-right"/></svg></a></li>
+        <li class="reveal"><a href="#index"><span class="n">02</span><span class="name">Kids</span><span class="thumb"><img src="{{uri:prototype/img/cat-kids.webp}}" alt=""></span><svg class="icon"><use href="#i-chevron-right"/></svg></a></li>
+        <li class="reveal"><a href="#index"><span class="n">03</span><span class="name">Hats</span><span class="thumb"><img src="{{uri:prototype/img/cat-hats.webp}}" alt=""></span><svg class="icon"><use href="#i-chevron-right"/></svg></a></li>
+        <li class="reveal"><a href="#index"><span class="n">04</span><span class="name">Totes</span><span class="thumb"><img src="{{uri:prototype/img/cat-totes.webp}}" alt=""></span><svg class="icon"><use href="#i-chevron-right"/></svg></a></li>
+        <li class="reveal"><a href="#index"><span class="n">05</span><span class="name">Rope Totes</span><span class="thumb"><img src="{{uri:prototype/img/cat-rope.webp}}" alt=""></span><svg class="icon"><use href="#i-chevron-right"/></svg></a></li>
+        <li class="reveal"><a href="#index"><span class="n">06</span><span class="name">Beach Towels</span><span class="thumb"><img src="{{uri:prototype/img/cat-towels.webp}}" alt=""></span><svg class="icon"><use href="#i-chevron-right"/></svg></a></li>
+      </ul>
     </div>
   </section>
 
-  <section class="band" id="featured" style="padding-top:0">
-    <div class="wrap">
-      <div class="head"><h2 class="rule">Classic Tees</h2><a class="more label" href="#shop">Shop all tees <svg class="icon"><use href="#i-chevron-right"/></svg></a></div>
-      <div class="cards">
-        <a class="card" href="#featured"><div class="img"><img src="{{uri:styletile/img/tee-wcyc.webp}}" alt="Navy Working Class Yacht Club tee"></div>
-          <div class="meta"><span class="num">01</span><h3>Working Class Yacht Club</h3><span class="c">Navy</span><span class="price">$—</span></div></a>
-        <a class="card" href="#featured"><div class="img"><img src="{{uri:styletile/img/tee-harbor.webp}}" alt="Ivory Harbor tee"><span class="badge new">New</span></div>
-          <div class="meta"><span class="num">02</span><h3>Harbor · Work. Fish. Repeat.</h3><span class="c">Ivory</span><span class="price">$—</span></div></a>
-        <a class="card" href="#featured"><div class="img"><img src="{{uri:styletile/img/tee-coldwater.webp}}" alt="Sea green Cold Water Division tee"></div>
-          <div class="meta"><span class="num">03</span><h3>Cold Water Division</h3><span class="c">Sea Green</span><span class="price">$—</span></div></a>
-        <a class="card" href="#featured"><div class="img"><img src="{{uri:styletile/img/tee-buoy.webp}}" alt="Blue jean Buoy Is Relative tee"></div>
-          <div class="meta"><span class="num">05</span><h3>Buoy Is Relative</h3><span class="c">Blue Jean</span><span class="price">$—</span></div></a>
-      </div>
-    </div>
-  </section>
-
-  <section class="story" id="story" aria-label="Our story">
-    <div class="photo"><img src="{{uri:styletile/img/panel-boathouse.webp}}" alt="Weathered boathouse with buoys at dusk"><span class="ph">Placeholder image</span></div>
-    <div class="text">
-      <span class="label eyebrow">Our story</span>
-      <h2 class="display">Work hard.<br>Live salty.<br>Stay grounded.</h2>
-      <div class="anchor-rule"><svg class="icon"><use href="#i-anchor"/></svg></div>
-      <p class="lede">Quality goods for a life well lived.</p>
-      <p class="body">Urban Duck makes gear for the dock, the boat, and everywhere in between. Garment-dyed tees, washed caps, heavy canvas totes and beach towels, designed to look better the more you use them.</p>
-      <div><a class="btn ghost" href="#story">Read our story</a></div>
-    </div>
-  </section>
-
-  <section class="band">
-    <div class="wrap">
-      <div class="features">
-        <div><svg class="icon"><use href="#i-cotton"/></svg><b>Premium fabric</b><p>Soft, heavyweight cotton and canvas, built to last.</p></div>
-        <div><svg class="icon"><use href="#i-waves"/></svg><b>Garment dyed</b><p>A broken-in, vintage feel from day one.</p></div>
-        <div><svg class="icon"><use href="#i-shield"/></svg><b>Built to last</b><p>Reinforced stitching and strong handles for everyday use.</p></div>
-        <div><svg class="icon"><use href="#i-duck"/></svg><b>Coastal life</b><p>Designed for the water and the moments in between.</p></div>
-      </div>
+  <section class="band" id="story" style="padding-top:0">
+    <div class="wrap manifesto reveal">
+      <div class="duck">{{svg:duck-icon}}</div>
+      <p>Work hard. Live salty. Stay grounded.</p>
+      <a class="btn outline" href="#story">Our story</a>
     </div>
   </section>
 
   <section class="band wholesale" id="wholesale">
-    <div class="wrap ws">
-      <div class="copy">
-        <span class="label" style="color:var(--ud-rust)">Wholesale</span>
-        <h2>Stock Urban Duck in your shop.</h2>
+    <div class="wrap ws reveal">
+      <div>
+        <span class="label">Wholesale</span>
+        <h2>Stock Urban Duck.</h2>
         <p>Made for marina shops, boutiques and coastal gift stores. Tees, kids tees, hats, totes, rope totes and beach towels, ready to merchandise together.</p>
-        <ul>
-          <li><svg class="icon"><use href="#i-anchor"/></svg><span>Full wholesale catalog on request</span></li>
-          <li><svg class="icon"><use href="#i-tote"/></svg><span>Mix and match across every category</span></li>
-          <li><svg class="icon"><use href="#i-truck"/></svg><span>Order directly with Urban Duck</span></li>
-        </ul>
-        <div style="display:flex;flex-wrap:wrap;gap:12px"><a class="btn" href="#wholesale">Request the catalog</a><a class="btn outline" href="#wholesale">Wholesale inquiry</a></div>
-        <p class="contact">Or email <b>orders@trendsetprotraders.com</b></p>
       </div>
-      <div class="ticket">
-        <div class="duck">{{svg:duck-icon}}</div>
-        <p class="display big">Carry good things.<br>Live salty.</p>
-        <span class="label" style="color:var(--ud-stone)">Built for the elements</span>
+      <div class="actions">
+        <a class="btn" href="#wholesale">Request the catalog</a>
+        <span class="mail">orders@trendsetprotraders.com</span>
       </div>
-    </div>
-  </section>
-
-  <section class="band">
-    <div class="wrap ig">
-      <span class="label" style="color:var(--ud-rust)">Follow along</span>
-      <p class="handle">@urbanduckapparel</p>
-      <p>Long days. Salty souls. Find us on Instagram.</p>
     </div>
   </section>
 </main>
@@ -289,11 +249,69 @@ footer.site { background: var(--ud-night); color: var(--ud-sail); padding-block:
 <footer class="site">
   <div class="wrap">
     <div class="ft">
-      <div class="brand"><div class="corp">{{svg:logo-corporate}}</div><span class="label tag">Working Class Luxury</span><p class="email">Questions? <b>support@urbanduckapparel.com</b></p></div>
-      <div><h4>Shop</h4><ul><li><a href="#shop">Tees</a></li><li><a href="#shop">Kids</a></li><li><a href="#shop">Hats</a></li><li><a href="#shop">Totes</a></li><li><a href="#shop">Rope Totes</a></li><li><a href="#shop">Beach Towels</a></li></ul></div>
+      <div class="brand"><div class="corp">{{svg:logo-corporate}}</div><span class="label tag">Working Class Luxury</span><p class="email">support@urbanduckapparel.com<br>@urbanduckapparel</p></div>
+      <div><h4>Shop</h4><ul><li><a href="#index">Tees</a></li><li><a href="#index">Kids</a></li><li><a href="#index">Hats</a></li><li><a href="#index">Totes</a></li><li><a href="#index">Rope Totes</a></li><li><a href="#index">Beach Towels</a></li></ul></div>
       <div><h4>Help</h4><ul><li><a href="#top">Shipping</a></li><li><a href="#top">Returns</a></li><li><a href="#top">Size guide</a></li><li><a href="#top">Contact</a></li></ul></div>
       <div><h4>Company</h4><ul><li><a href="#story">Our Story</a></li><li><a href="#wholesale">Wholesale</a></li><li><a href="#top">Privacy</a></li><li><a href="#top">Terms</a></li></ul></div>
     </div>
-    <div class="legal label"><span>© Urban Duck</span><span>Built for the elements. Inspired by coastal life.</span></div>
+    <div class="legal label"><span>© Urban Duck</span><span>Built for the elements</span></div>
   </div>
 </footer>
+
+<span class="preview-tag">Preview · placeholder photos</span>
+
+<script>
+(() => {
+  const root = document.documentElement;
+  const scene = document.getElementById('scene');
+  const stage = document.getElementById('stage');
+  const hdr = document.getElementById('hdr');
+  const prods = [...stage.querySelectorAll('.prod')];
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  root.classList.add('js');
+
+  // reveal-on-scroll for everything below the scene
+  const io = 'IntersectionObserver' in window ? new IntersectionObserver((es) => es.forEach((e) => {
+    if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+  }), { rootMargin: '0px 0px -8% 0px' }) : null;
+  document.querySelectorAll('.reveal').forEach((el, i) => {
+    el.style.transitionDelay = el.tagName === 'LI' ? `${(i % 7) * 70}ms` : '0ms';
+    io ? io.observe(el) : el.classList.add('in');
+  });
+
+  if (reduced) {
+    root.classList.add('static');
+    const solid = () => hdr.classList.toggle('solid', scrollY > innerHeight * .8);
+    addEventListener('scroll', solid, { passive: true }); solid();
+    return;
+  }
+
+  const clamp = (v) => Math.min(1, Math.max(0, v));
+  const ramp = (a, b, p) => { const t = clamp((p - a) / (b - a)); return t * t * (3 - 2 * t); }; // smoothstep
+  let ticking = false;
+
+  const frame = () => {
+    ticking = false;
+    const total = scene.offsetHeight - innerHeight;
+    const p = clamp((scrollY - scene.offsetTop) / total);
+    const s = stage.style;
+    // 1. push into the dock
+    s.setProperty('--zoom', (1 + ramp(0, .62, p) * 0.85).toFixed(4));
+    s.setProperty('--drift', (ramp(0, .62, p) * -4).toFixed(3) + '%');
+    s.setProperty('--bright', (.56 - ramp(.2, .55, p) * .12).toFixed(3));
+    // 2. headline out, tagline in and out
+    s.setProperty('--t1', (1 - ramp(.02, .2, p)).toFixed(3));
+    s.setProperty('--t2', (ramp(.24, .34, p) * (1 - ramp(.48, .56, p))).toFixed(3));
+    // 3. paper wipes up, products rise in one by one
+    s.setProperty('--wipe', (1 - ramp(.56, .72, p)).toFixed(4));
+    s.setProperty('--ph', ramp(.66, .76, p).toFixed(3));
+    prods.forEach((el, i) => el.style.setProperty('--p', ramp(.7 + i * .045, .84 + i * .045, p).toFixed(3)));
+    s.setProperty('--pc', ramp(.9, .98, p).toFixed(3));
+    hdr.classList.toggle('solid', p > .62);
+  };
+  const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(frame); } };
+  addEventListener('scroll', onScroll, { passive: true });
+  addEventListener('resize', onScroll);
+  frame();
+})();
+</script>
